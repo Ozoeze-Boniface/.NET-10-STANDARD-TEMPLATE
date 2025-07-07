@@ -8,11 +8,17 @@ public class ServiceDefinition : IEndpointDefinition
     public void DefineEndPoints(WebApplication app)
     {
 
-        app.MapGroup("/CasaSweep")
-                .EocCasaGroup()
+        app.MapGroup("/auth")
+                .AuthGroup()
                 .RequireCors("corsapp")
                 .RequireRateLimiting("LimitPolicy")
-                .WithTags("EocCasaManager");
+                .WithTags("AuthManager");
+
+        app.MapGroup("/user")
+                .UserGroup()
+                .RequireCors("corsapp")
+                .RequireRateLimiting("LimitPolicy")
+                .WithTags("UserManager");
 
     }
     public void DefineServices(IServiceCollection services)
