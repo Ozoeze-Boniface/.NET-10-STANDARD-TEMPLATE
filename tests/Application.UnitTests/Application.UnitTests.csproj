@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>CityCode.MandateSystem.Application.UnitTests</RootNamespace>
+        <AssemblyName>CityCode.MandateSystem.Application.UnitTests</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="nunit" />
+        <PackageReference Include="NUnit.Analyzers">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Moq" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\CityCode.MandateSystem.Application\CityCode.MandateSystem.Application.csproj" />
+        <ProjectReference Include="..\..\src\CityCode.MandateSystem.Infrastructure\CityCode.MandateSystem.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,112 @@
+ Welcome to Ruby .Net 8 Minimal API project boiler template.
+
+https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/overview?view=aspnetcore-8.0
+
+
+MapGet GET	Returns data
+MapPost POST	Sends data that creates a resource
+MapPut PUT	Sends data that updates a resource
+mapDelete DELETE	Removes a resource
+
+ Identity configuration and main project files already incorporated
+ in the project
+
+ These are some commands to make u feel comfortable on Visual Studio Code Environment
+ Feel free to delete files that you don't need.
+
+ //create A Solution File and add all projects to the solution,
+
+ dotnet new sln --name [SolutionName]
+ dotnet sln add ./[ProjectFullPath].csproj
+
+
+//Restore all dependencies in the solution
+dotnet restore
+
+TODO: Ensure everybody checks.
+
+
+FIXME: fix null pointe exception
+
+ //Build The Solution
+ dotnet build [SolutionName].sln
+
+
+//Build a particular project : Change into Project directory and run:
+dotnet build
+
+//Run your app and do instant hot reloading (dotnet watch runs Production Environment by default. run the ENVIRONMENT export
+//Before runing dotnet watch for hot reload.
+)
+run export ASPNETCORE_ENVIRONMENT=Development
+dotnet watch
+
+//Run The API : Change into the API directory (./[Project].API) and run
+dotnet run
+
+
+//To Add A Package
+dotnet add package [package full description]
+e.g dotnet add package Microsoft.EntityFrameworkCore.Design
+
+//CORS Enabled in Project. Consider Removing it from Program.cs if you have a specific reasons not to use it
+
+
+//To Create Different Project Types Using Customized Templates
+dotnet new ruby-clean-min-api -n [ProjectName] - Web API.
+
+//To Create Different Project Types
+dotnet new classlib -n [ProjectName].[Data] — class library
+dotnet new webapi -n [ProjectName].[API] - Web API.
+dotnet new console --name Foo --output Foo  --Console App
+
+
+//For gits
+ git init
+ git add *
+ git checkout -b develop
+then push to repository using the git desk top.
+Add local repo, select and push.
+
+Publish and Push to Repo
+======================================
+--adjust parameters in your .csproj file
+dotnet publish
+docker push [repoName]/[projectName]
+docker logout
+docker login
+docker images
+docker rm   ==> container removal
+docker rmi ==> image remove
+docker inspect
+
+== to overide that is in the cspro file
+docker login -u [dockeruserName]
+dotnet publish /p:PublishProfile=DefaultContainer /p:ContainerBaseImage=mcr.microsoft.com/dotnet/aspnet:8.0-preview-jammy-chiseled /p:ContainerRegistry=docker.io /p:ContainerRepository=richlander/foo
+
+============================================
+Code Validation Check
+-------------------------------------------
+dotnet format analyzers --verify-no-changes
+dotnet format style --verify-no-changes
+dotnet format --verify-no-changes
+
+
+--------------------------------------------
+Entity EntityFrameworkCore
+--------------------------------------------
+dotnet ef migrations add InitialMigration -s src/CityCode.MandateSystem.Api -p src/CityCode.MandateSystem.Infrastructure
+dotnet ef database update  -s src/CityCode.MandateSystem.Api -p src/CityCode.MandateSystem.Infrastructure
+
+dotnet ef migrations add
+dotnet ef database update
+
+=================================================
+POSTGRES DATABASE SCRIPTS
+=================================================
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE pg_stat_activity.datname = 'CityCode.MandateSystemDB' -- ← change this to your DB
+  AND pid <> pg_backend_pid();
+
+drop database "CityCode.MandateSystemDB"
