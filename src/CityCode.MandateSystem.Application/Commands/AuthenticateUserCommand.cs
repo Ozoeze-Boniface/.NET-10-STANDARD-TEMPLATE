@@ -27,7 +27,7 @@ namespace CityCode.MandateSystem.Application.Commands
 
         public async Task<Common.Models.View.Result<AuthResponse>> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _context.AppUsers.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.AppUsers.Include(s => s.Permission).FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user is null)
                 return Common.Models.View.Result<AuthResponse>.Failure("User details does not exist");
@@ -35,7 +35,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (user.PasswordHash is null)
             {
                 var hashedPassword = HashPassword(request.Password);
-                user.SetPassword(request.Password);
+                user.SetPassword(hashedPassword);
                 var token = GenerateToken(user);
                 var response = new AuthResponse(token, string.Empty, user);
                 await _context.SaveChangesAsync(cancellationToken);

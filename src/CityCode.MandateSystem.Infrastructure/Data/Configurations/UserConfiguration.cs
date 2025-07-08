@@ -45,7 +45,7 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
 
             // One-to-many relationship with Permission
             builder.HasMany(u => u.Permission)
-                .WithOne(p => p.User)
+                .WithOne()
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade).IsRequired(false); // Or .Restrict / .SetNull based on your needs
 

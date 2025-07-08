@@ -14,7 +14,6 @@ namespace CityCode.MandateSystem.Domain.Entities
         public string Action { get; set; } = string.Empty; // e.g., "Read", "Write", "Delete", "Approve"
         public bool IsActive { get; set; } = true;
         public long UserId { get; set; }
-        public User? User { get; set; }
     }
 
 }

@@ -38,10 +38,12 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
                 .IsRequired();
 
             // Define relationship with User
-            builder.HasOne(p => p.User)
+            builder
+                .HasOne<User>() // No navigation property in Permission
                 .WithMany(u => u.Permission)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Adjust as needed
+                .OnDelete(DeleteBehavior.Cascade); // Or .SetNull / .Restrict as needed
+
         }
     }
 }

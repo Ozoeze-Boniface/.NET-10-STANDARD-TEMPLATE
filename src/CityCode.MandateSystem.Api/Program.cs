@@ -15,10 +15,21 @@ builder.Services.AddWebServices();
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder => builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()));
 
 
-// builder.Host.UseSerilog(
-//     (HostBuilderContext context, IServiceProvider serviceProvider, LoggerConfiguration config) => config.ReadFrom
-//         .Configuration(context.Configuration)
-//         .ReadFrom.Services(serviceProvider));
+// builder.Services.ConfigureApplicationCookie(options =>
+// {
+//     options.Events.OnRedirectToLogin = context =>
+//     {
+//         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+//         return Task.CompletedTask;
+//     };
+
+//     options.Events.OnRedirectToAccessDenied = context =>
+//     {
+//         context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//         return Task.CompletedTask;
+//     };
+// });
+
 
 builder.Host.UseSerilog();
 
@@ -39,7 +50,7 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
+await app.InitializeSeed(CancellationToken.None);
 app.UseExceptionHandler(options => { });
 app.UseCustomExceptionHandler();
 app.MapEndpoints();

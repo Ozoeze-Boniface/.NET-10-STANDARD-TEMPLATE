@@ -17,7 +17,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 var result = await sender.Send(command);
                 return result;
             })
-            .WithDisplayName("Create User").RequireAuthorization().RequirePermission(PermissionConstants.CreateUser);
+            .WithDisplayName("Create User").RequirePermission(PermissionConstants.CreateUser);
 
             return group;
         }

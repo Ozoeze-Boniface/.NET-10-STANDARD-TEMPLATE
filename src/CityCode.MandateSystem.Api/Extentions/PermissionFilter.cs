@@ -31,7 +31,7 @@ namespace CityCode.MandateSystem.Api.Extentions
                     return Results.Unauthorized();
                 }
 
-                var userPermissions = currentUser.Permissions?.Select(p => p.Name).ToList() ?? new List<string>();
+                var userPermissions = currentUser.Permissions?.Select(p => p.Description).ToList() ?? new List<string>();
 
                 bool hasRequiredPermissions = logic switch
                 {

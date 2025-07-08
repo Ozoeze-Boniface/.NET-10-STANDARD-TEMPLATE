@@ -1,4 +1,5 @@
 namespace Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -10,13 +11,16 @@ using CityCode.MandateSystem.Infrastructure.Data;
 using CityCode.MandateSystem.Infrastructure.Data.Interceptors;
 using CityCode.MandateSystem.Infrastructure.Identity;
 using StackExchange.Redis;
+using CityCode.MandateSystem.Infrastructure.Seeders.Interface;
+using CityCode.MandateSystem.Infrastructure.Seeders;
+using Microsoft.AspNetCore.Builder;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var connection = configuration.GetConnectionString("DefaultConnection");
-        
+
         var timeout = configuration["DatabaseSettings:Timeout"];
         var commandTimeout = configuration["DatabaseSettings:CommandTimeout"];
         var maxPoolSize = configuration["DatabaseSettings:MaxPoolSize"];
@@ -60,6 +64,16 @@ public static class DependencyInjection
             return ConnectionMultiplexer.Connect(redisConnectionString);
         });
 
+        services.AddScoped<ISeederService, SeederService>();
+        services.AddScoped<IDataSeeder, UserSeeder>();
+
         return services;
+    }
+
+    public static async Task InitializeSeed(this IApplicationBuilder app, CancellationToken cancellationToken = default)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var initializer = scope.ServiceProvider.GetRequiredService<ISeederService>();
+        await initializer.SeedAllAsync();
     }
 }
