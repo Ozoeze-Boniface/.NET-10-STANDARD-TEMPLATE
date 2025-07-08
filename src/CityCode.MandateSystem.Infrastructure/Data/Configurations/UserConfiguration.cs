@@ -36,7 +36,7 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
                 .HasMaxLength(100);
 
             builder.Property(u => u.PasswordHash)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(u => u.IsActive)
                 .IsRequired();

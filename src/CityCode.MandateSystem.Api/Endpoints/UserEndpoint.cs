@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityCode.MandateSystem.Api.Extentions;
+using CityCode.MandateSystem.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityCode.MandateSystem.Api.Endpoints
@@ -15,7 +17,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 var result = await sender.Send(command);
                 return result;
             })
-            .WithDisplayName("Authentication");
+            .WithDisplayName("Create User").RequireAuthorization().RequirePermission(PermissionConstants.CreateUser);
 
             return group;
         }

@@ -8,13 +8,14 @@ namespace CityCode.MandateSystem.Domain.Entities
 {
     public class User
     {
-        public long UserId { get; private set; }
+        public long UserId { get; set; }
         public string FirstName { get; private set; } = string.Empty;
         public string LastName { get; private set; } = string.Empty;
+        public string FullName => FirstName + " " + LastName;
         public string Email { get; private set; } = string.Empty;
         public string PhoneNumber { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
-        public string PasswordHash { get; private set; } = string.Empty;
+        public string? PasswordHash { get; private set; }
         public bool IsActive { get; private set; } = true;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; private set; }
@@ -52,6 +53,11 @@ namespace CityCode.MandateSystem.Domain.Entities
                 Name = s.Resource,
                 IsActive = true,
             }).ToList() ?? null!;
+        }
+
+        public void SetPassword(string password)
+        {
+            PasswordHash = password;
         }
     }
 

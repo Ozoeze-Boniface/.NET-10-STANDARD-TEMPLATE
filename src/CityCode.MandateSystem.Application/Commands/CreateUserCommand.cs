@@ -18,6 +18,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public string Username { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
+        public bool IsSuperAdim { get; set; } = false;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; set; }
         public virtual List<PermissionDto>? Permission { get; set; }
