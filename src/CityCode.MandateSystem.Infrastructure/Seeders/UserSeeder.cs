@@ -24,21 +24,28 @@ namespace CityCode.MandateSystem.Infrastructure.Seeders
 
         public async Task SeedAsync()
         {
-            var email = _configuration.GetValue<string>("DefaultAdminEmail") ?? "";
-            if (string.IsNullOrEmpty(email))
+            try
             {
-                //
-            }
-            else
-            {
-                var existsing = await _context.AppUsers.AnyAsync(s => s.Email == email);
-                if (!existsing)
-                {                    
-                    var user = new User("System", "Admin", email, "08068854789", "system", null!, true, DateTime.UtcNow, Role.Admin);
-                    user.WithPermissions(new List<Domain.DomainDto.PermissionDto>() { new Domain.DomainDto.PermissionDto { Name = PermissionConstants.CreateMandate, Action = "Approve", Description = "CreatingMandate", IsActive = true, Resource = "User" } });
-                    await _context.AppUsers.AddAsync(user);
-                    await _context.SaveChangesAsync(CancellationToken.None);
+                var email = _configuration.GetValue<string>("DefaultAdminEmail") ?? "";
+                if (string.IsNullOrEmpty(email))
+                {
+                    //
                 }
+                else
+                {
+                    var existsing = await _context.AppUsers.AnyAsync(s => s.Email == email);
+                    if (!existsing)
+                    {
+                        var user = new User("System", "Admin", email, "08068854789", "system", null!, true, DateTime.UtcNow, Role.Admin);
+                        user.WithPermissions(new List<Domain.DomainDto.PermissionDto>() { new Domain.DomainDto.PermissionDto { Name = PermissionConstants.CreateMandate, Action = "Approve", Description = "CreatingMandate", IsActive = true, Resource = "User" } });
+                        await _context.AppUsers.AddAsync(user);
+                        await _context.SaveChangesAsync(CancellationToken.None);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
             }
         }
         public int Order => 2;

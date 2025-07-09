@@ -8,32 +8,21 @@ namespace CityCode.MandateSystem.Domain.Constants
     public class PermissionConstants
     {
         // Mandate Creation & Management
-        public const string CreateMandate = "CreateMandate";
-        public const string EditMandate = "EditMandate";
-        public const string ViewMandate = "ViewMandate";
-        public const string DeleteMandate = "DeleteMandate";
+        public const string CreateMandate = "INITIATE_MANDATE_CREATE";
+        public const string ActivateMandate = "ACTIVATE_MANDATE";
+        public const string DeactivateMandate = "DEACTIVATE_MANDATE";
+        public const string ApproveMandate = "APPROVE_MANDATE_LIFECYCLE";
+        public const string ViewReport = "VIEW_REPORTS";
+        public const string DownloadReport = "DOWNLOAD_REPORTS";
 
-        // Mandate Approval Workflow
-        public const string SubmitMandateForApproval = "SubmitMandateForApproval";
-        public const string ApproveMandate = "ApproveMandate";
-        public const string RejectMandate = "RejectMandate";
-        public const string ReassignMandate = "ReassignMandate";
 
-        // Mandate Execution
-        public const string ExecuteMandate = "ExecuteMandate";
-        public const string CancelMandate = "CancelMandate";
+        // User
+        public const string ViewUserReport = "VIEW_USER_REPORTS";
+        public const string ViewAuditLogs = "VIEW_AUDIT_LOGS";
+        public const string CreateUser = "CREATE_USER";
+        public const string EditUser = "EDIT_USER";
+        public const string AssignPermissions = "ASSIGN_PERMISSIONS";
+        public const string ActivateDeactivateUser = "SET_USER_STATUS";
 
-        // Mandate Audit & Logs
-        public const string ViewMandateAuditTrail = "ViewMandateAuditTrail";
-        public const string ViewMandateExecutionLog = "ViewMandateExecutionLog";
-
-        // Mandate Role Management
-        public const string AssignMandateSignatory = "AssignMandateSignatory";
-        public const string ConfigureMandateRules = "ConfigureMandateRules";
-
-        // Admin / System Level
-        public const string ManageMandatePermissions = "ManageMandatePermissions";
-        public const string OverrideMandateLimits = "OverrideMandateLimits";
-        public const string CreateUser = "CreateUser";
     }
 }
