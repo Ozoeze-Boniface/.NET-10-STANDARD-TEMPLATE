@@ -1,0 +1,32 @@
+name: Deploy to EC2
+
+on:
+  workflow_run:
+    workflows: ["Build and Push to GHCR"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy on EC2
+      env:
+        GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+        GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          docker login ghcr.io -u $GHCR_USERNAME -p $GHCR_TOKEN
+          docker pull ghcr.io/$GHCR_USERNAME/MANDATE-API:latest
+          docker stop my-app || true && docker rm my-app || true
+          docker run -d --name my-app -p 80:3000 ghcr.io/$GHCR_USERNAME/MANDATE-API:latest
+        EOF
