@@ -6,16 +6,32 @@ on:
       - staging
 
 jobs:
-  push_to_ghcr:
+  build-and-push:
     runs-on: ubuntu-latest
 
     permissions:
+<<<<<<< HEAD
       contents: write  # Needed to commit the version bump
       packages: write  # Needed to push to GHCR
+=======
+      contents: read
+      packages: write
+
+>>>>>>> 0650e49 (Update pushtoghcr.yml)
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+<<<<<<< HEAD
+=======
+      # --- NEW STEP TO CREATE A LOWERCASE OWNER NAME ---
+      # This step takes the repository owner's name (kikitech), forces it to lowercase,
+      # and saves it in an output variable we can use later.
+      - name: Set owner to lowercase
+        id: string
+        run: echo "owner_lc=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+>>>>>>> 0650e49 (Update pushtoghcr.yml)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -24,14 +40,19 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
+<<<<<<< HEAD
           password: ${{ secrets.GITHUB_TOKEN }} # Use the built-in, secure token
+=======
+          password: ${{ secrets.GITHUB_TOKEN }}
+>>>>>>> 0650e49 (Update pushtoghcr.yml)
 
-      - name: Build and Push Docker Image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./NumberClassificationApi/Dockerfile
           push: true
+<<<<<<< HEAD
           tags: ghcr.io/kiki-user1/mandateapi:${{ github.sha }}
 
       - name: Deploy to EC2
@@ -46,3 +67,8 @@ jobs:
             docker stop HngStageOneProject || true
             docker rm HngStageOneProject || true
             docker run -d --name mandateapi -p 80:80 ghcr.io/kiki-user1/mandateapi:${{ github.sha }}
+=======
+          # --- MODIFIED LINE ---
+          # Use the new lowercase variable from the step above.
+          tags: ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapistaging:${{ github.sha }}
+>>>>>>> 0650e49 (Update pushtoghcr.yml)
