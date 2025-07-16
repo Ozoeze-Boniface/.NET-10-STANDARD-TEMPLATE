@@ -31,6 +31,12 @@ namespace CityCode.MandateSystem.Api.Extentions
                     return Results.Unauthorized();
                 }
 
+                // Super users have access to everything
+                if (currentUser.User.IsSuperAdmin)
+                {
+                    return await next(context);
+                }
+
                 var userPermissions = currentUser.Permissions?.Select(p => p.Description).ToList() ?? new List<string>();
 
                 bool hasRequiredPermissions = logic switch

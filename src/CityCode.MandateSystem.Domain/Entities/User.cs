@@ -16,6 +16,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public string PhoneNumber { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
         public string? PasswordHash { get; private set; }
+        public bool IsSuperAdmin { get; set; } = false;
         public bool IsActive { get; private set; } = true;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; private set; }
@@ -31,7 +32,8 @@ namespace CityCode.MandateSystem.Domain.Entities
             string passwordHash,
             bool isActive,
             DateTime? lastLogin,
-            Role role)
+            Role role,
+            bool isSuperAdmin)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -42,6 +44,7 @@ namespace CityCode.MandateSystem.Domain.Entities
             IsActive = isActive;
             LastLogin = lastLogin;
             Role = role;
+            IsSuperAdmin = isSuperAdmin;
         }
 
         public void WithPermissions(List<PermissionDto>? permissions)

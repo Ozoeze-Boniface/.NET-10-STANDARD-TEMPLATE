@@ -21,6 +21,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public bool IsSuperAdim { get; set; } = false;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; set; }
+        public bool IsSuperAdmin { get; set; } = false;
         public virtual List<PermissionDto>? Permission { get; set; }
     }
 
@@ -34,7 +35,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (userExists)
                 return Common.Models.View.Result<User>.Failure("User already exists");
 
-            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.Now, request.Role);
+            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.Now, request.Role, request.IsSuperAdim);
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);

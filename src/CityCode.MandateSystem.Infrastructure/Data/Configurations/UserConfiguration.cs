@@ -42,6 +42,8 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
                 .IsRequired();
 
             builder.Property(u => u.LastLogin);
+            builder.Property(u => u.IsSuperAdmin)
+                .IsRequired();
 
             // One-to-many relationship with Permission
             builder.HasMany(u => u.Permission)
