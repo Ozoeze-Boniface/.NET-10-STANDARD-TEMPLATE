@@ -20,6 +20,12 @@ public class ServiceDefinition : IEndpointDefinition
                 .RequireRateLimiting("LimitPolicy")
                 .WithTags("UserManager");
 
+        app.MapGroup("/mandate")
+                .MandateGroup()
+                .RequireCors("corsapp")
+                .RequireRateLimiting("LimitPolicy")
+                .WithTags("Mandate Manager");
+
     }
     public void DefineServices(IServiceCollection services)
     {

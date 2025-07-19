@@ -17,6 +17,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ApiRequestLog> ApiRequestLogs => this.Set<ApiRequestLog>();
     public DbSet<User> AppUsers => this.Set<User>();
     public DbSet<Permission> Permissions => this.Set<Permission>();
+    public DbSet<Mandate> Mandates => this.Set<Mandate>();
+    public DbSet<MandateRequest> MandateRequests => this.Set<MandateRequest>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)

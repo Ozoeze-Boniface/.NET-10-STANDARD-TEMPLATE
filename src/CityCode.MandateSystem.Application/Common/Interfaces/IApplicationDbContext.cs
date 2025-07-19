@@ -12,7 +12,8 @@ public interface IApplicationDbContext
     DbSet<ApiRequestLog> ApiRequestLogs { get; }
     DbSet<User> AppUsers { get; }
     DbSet<Permission> Permissions { get; }
-
+    DbSet<Mandate> Mandates { get; }
+    DbSet<MandateRequest> MandateRequests { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

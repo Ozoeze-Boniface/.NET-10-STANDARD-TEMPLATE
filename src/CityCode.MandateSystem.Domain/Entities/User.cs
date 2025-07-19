@@ -6,7 +6,7 @@ using CityCode.MandateSystem.Domain.DomainDto;
 
 namespace CityCode.MandateSystem.Domain.Entities
 {
-    public class User
+    public class User : BaseAuditableEntity
     {
         public long UserId { get; set; }
         public string FirstName { get; private set; } = string.Empty;
