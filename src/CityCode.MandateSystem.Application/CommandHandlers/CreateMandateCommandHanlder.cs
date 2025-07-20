@@ -26,6 +26,7 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
             var mandateRequest = _mapper.Map<MandateRequest>(request);
             mandateRequest.SetBillerAndProductDetails(_systemSettings.BillerId, _systemSettings.ProductId);
             mandateRequest.GenerateMandateRefernce();
+            mandateRequest.SetInitiatorDetails(request.InitiatedBy, request.InitiatedById);
             await _context.MandateRequests.AddAsync(mandateRequest);
             await _context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<MandateRequest>.Success(DateTime.UtcNow, mandateRequest);

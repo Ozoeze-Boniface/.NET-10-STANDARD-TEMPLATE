@@ -20,10 +20,6 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(m => m.InitiatedBy)
-                .IsRequired()
-                .HasMaxLength(100);
-
             builder.Property(m => m.SubscriberCode)
                 .IsRequired()
                 .HasMaxLength(50);
