@@ -10,8 +10,6 @@ namespace CityCode.MandateSystem.Domain.Entities
     {
         public long MandateRequestId { get; set; }
         public string MandateReference { get; set; } = string.Empty;
-        public string InitiatedBy { get; set; } = string.Empty;
-        public long InitiatedById { get; set; }
         public int ProductId { get; set; }
         public int BillerId { get; set; }
         public string SubscriberCode { get; set; } = string.Empty;
@@ -53,5 +51,10 @@ namespace CityCode.MandateSystem.Domain.Entities
             BillerId = billerId;
         }
 
+        public void SetInitiatorDetails(string initiatedBy, long initiatedById)
+        {
+            CreatedBy = initiatedBy;
+            CreatedById = initiatedById;
+        }
     }
 }
