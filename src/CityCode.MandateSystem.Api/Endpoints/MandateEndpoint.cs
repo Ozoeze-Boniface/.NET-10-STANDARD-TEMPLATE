@@ -24,7 +24,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 var result = await sender.Send(command);
                 return result;
             })
-            .WithDisplayName("Create mandate").RequirePermission(PermissionConstants.ApproveMandate);
+            .WithDisplayName("Approve mandate").RequirePermission(PermissionConstants.ApproveMandate);
 
             return group;
         }
