@@ -26,7 +26,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             set -e
-            IMAGE_NAME="ghcr.io/${{ steps.string.outputs.owner_lc }}/mandatefe:dev-latest"
+            IMAGE_NAME="ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest"
             
             echo "--- Logging in to GHCR ---"
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
@@ -39,4 +39,4 @@ jobs:
             docker rm mandatefe-container || true
             
             echo "--- Starting new container ---"
-            docker run -d --name mandatefe-container --restart=unless-stopped -p 9001:8080 $IMAGE_NAME
+            docker run -d --name mandateapidev-container --restart=unless-stopped -p 9001:8080 $IMAGE_NAME
