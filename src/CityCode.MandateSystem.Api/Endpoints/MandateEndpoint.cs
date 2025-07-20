@@ -19,7 +19,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
             })
             .WithDisplayName("Create mandate").RequirePermission(PermissionConstants.CreateMandate);
 
-            group.MapPost("/approve-mandate", async ([AsParameters] ApproveMandateCommand command, ISender sender) =>
+            group.MapPost("/approve-mandate", async (ApproveMandateCommand command, ISender sender) =>
             {
                 var result = await sender.Send(command);
                 return result;
