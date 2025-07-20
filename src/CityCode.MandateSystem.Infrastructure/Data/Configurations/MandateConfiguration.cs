@@ -106,6 +106,10 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
 
             builder.Property(m => m.CreatedById)
                 .IsRequired();
+
+            builder.Property(m => m.PaymentFrequency)
+                .HasConversion<int>() // enum to int
+                .IsRequired();
         }
     }
 }

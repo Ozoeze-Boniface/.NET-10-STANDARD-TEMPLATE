@@ -35,6 +35,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public MandateRequestStatus MandateRequestStatus { get; set; } = MandateRequestStatus.IN_REVIEW;
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
+        public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
 
         public void GenerateMandateRefernce()
