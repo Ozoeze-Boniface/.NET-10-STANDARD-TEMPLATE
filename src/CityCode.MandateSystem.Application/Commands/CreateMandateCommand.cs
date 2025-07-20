@@ -32,6 +32,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public MandateRequestStatus MandateRequestStatus { get; set; } = MandateRequestStatus.IN_REVIEW;
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
+        public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
     }
 
@@ -130,6 +131,10 @@ namespace CityCode.MandateSystem.Application.Commands
             RuleFor(x => x.Location)
                 .NotEmpty().WithMessage("Location is required.")
                 .MaximumLength(200);
+
+            RuleFor(x => x.PaymentFrequency)
+                .NotEmpty().WithMessage("PaymentFrequency is required.")
+                .IsInEnum().WithMessage("PaymentFrequency must be a valid enum value.");
         }
     }
 }
