@@ -11,8 +11,6 @@ namespace CityCode.MandateSystem.Application.Commands
     {
         public string InitiatedBy { get; set; } = string.Empty;
         public long InitiatedById { get; set; }
-        public int ProductId { get; set; }
-        public int BillerId { get; set; }
         public string SubscriberCode { get; set; } = string.Empty;
         public decimal ProductTotalAmount { get; set; }
         public decimal TransactionAmount { get; set; }
@@ -47,12 +45,6 @@ namespace CityCode.MandateSystem.Application.Commands
 
             RuleFor(x => x.InitiatedById)
                 .GreaterThan(0).WithMessage("InitiatedById must be greater than 0.");
-
-            RuleFor(x => x.ProductId)
-                .GreaterThan(0).WithMessage("ProductId must be greater than 0.");
-
-            RuleFor(x => x.BillerId)
-                .GreaterThan(0).WithMessage("BillerId must be greater than 0.");
 
             RuleFor(x => x.SubscriberCode)
                 .NotEmpty().WithMessage("SubscriberCode is required.")

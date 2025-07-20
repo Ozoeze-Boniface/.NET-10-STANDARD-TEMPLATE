@@ -46,5 +46,11 @@ namespace CityCode.MandateSystem.Domain.Entities
             MandateRequestStatus = status;
         }
 
+        public void SetBillerAndProductDetails(int productId, int billerId)
+        {
+            ProductId = productId;
+            BillerId = billerId;
+        }
+
     }
 }

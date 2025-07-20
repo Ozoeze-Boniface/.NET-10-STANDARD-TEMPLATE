@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddTransient<IGenericServices, GenericServices>();
         services.AddTransient<IInfoBipService, InfoBipService>();  
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings").Bind);
+        services.Configure<SystemSettings>(configuration.GetSection("SystemSettings").Bind);
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
