@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Query;
 
@@ -92,6 +93,8 @@ namespace CityCode.MandateSystem.Application.Extentions
 
             if (!string.IsNullOrWhiteSpace(request.Location))
                 query = query.Where(x => x.Location.Contains(request.Location));
+
+            query.ApplySearch(request.SearchField, request.SearchTerm);
 
             return query;
         }
@@ -190,6 +193,8 @@ namespace CityCode.MandateSystem.Application.Extentions
             if (!string.IsNullOrWhiteSpace(request.Location))
                 query = query.Where(x => x.Location.Contains(request.Location));
 
+            query.ApplySearch(request.SearchField, request.SearchTerm);
+
             return query;
         }
 
@@ -199,6 +204,28 @@ namespace CityCode.MandateSystem.Application.Extentions
             return query.Skip(skip).Take(pageSize);
         }
 
+        public static IQueryable<T> ApplySearch<T>(
+        this IQueryable<T> query,
+        string? searchField,
+        string? searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchField) || string.IsNullOrWhiteSpace(searchTerm))
+                return query;
+
+            var property = typeof(T).GetProperty(searchField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (property == null || property.PropertyType != typeof(string))
+                return query; // Skip invalid property or non-string fields
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var propertyAccess = Expression.Property(parameter, property.Name);
+            var searchTermConstant = Expression.Constant(searchTerm, typeof(string));
+
+            var containsMethod = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
+            var containsCall = Expression.Call(propertyAccess, containsMethod, searchTermConstant);
+
+            var lambda = Expression.Lambda<Func<T, bool>>(containsCall, parameter);
+            return query.Where(lambda);
+        }
 
     }
 }
