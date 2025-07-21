@@ -27,14 +27,14 @@ namespace CityCode.MandateSystem.Api.Endpoints
             })
             .WithDisplayName("Approve mandate").RequirePermission(PermissionConstants.ApproveMandate);
 
-            group.MapPost("/get-mandate-request", async ([AsParameters] GetMandateRequestQuery command, ISender sender) =>
+            group.MapGet("/get-mandate-request", async ([AsParameters] GetMandateRequestQuery command, ISender sender) =>
             {
                 var result = await sender.Send(command);
                 return result;
             })
             .WithDisplayName("Get Requests");
 
-            group.MapPost("/get-mandates", async ([AsParameters] GetMandateRequestQuery command, ISender sender) =>
+            group.MapGet("/get-mandates", async ([AsParameters] GetMandateQuery command, ISender sender) =>
             {
                 var result = await sender.Send(command);
                 return result;

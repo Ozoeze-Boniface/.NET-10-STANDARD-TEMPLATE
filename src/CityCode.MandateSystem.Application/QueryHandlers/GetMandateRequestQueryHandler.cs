@@ -21,8 +21,6 @@ namespace CityCode.MandateSystem.Application.QueryHandlers
             var result = await query.PaginatedListAsync(request.PageNumber, request.PageSize);
 
             return Common.Models.View.Result<PaginatedList<MandateRequest>>.Success(DateTime.Now, result);
-
-            throw new NotImplementedException();
         }
     }
 }
