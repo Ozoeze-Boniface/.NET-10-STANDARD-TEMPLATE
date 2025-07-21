@@ -12,6 +12,8 @@ namespace CityCode.MandateSystem.Application.Query
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? SearchTerm { get; set; } // Optional search term for filtering
+        public string? SearchField { get; set; } // Optional field to search against
         public long? MandateId { get; set; }
         public string? MandateReference { get; set; }
         public string? NibbsMandateCode { get; set; }

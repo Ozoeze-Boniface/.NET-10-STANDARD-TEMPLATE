@@ -12,6 +12,8 @@ namespace CityCode.MandateSystem.Application.Query
     {
         public int PageNumber { get; set; } = 1; // Default to first page
         public int PageSize { get; set; } = 10;  // Default to 10 items per page
+        public string? SearchTerm { get; set; } // Optional search term for filtering
+        public string? SearchField { get; set; } // Optional field to search against
         public long? MandateRequestId { get; set; }
         public string? MandateReference { get; set; }
         public int? ProductId { get; set; }
