@@ -94,7 +94,7 @@ namespace CityCode.MandateSystem.Application.Extentions
             if (!string.IsNullOrWhiteSpace(request.Location))
                 query = query.Where(x => x.Location.Contains(request.Location));
 
-            query.ApplySearch(request.SearchField, request.SearchTerm);
+            query = query.ApplySearch(request.SearchField, request.SearchTerm);
 
             return query;
         }
@@ -193,7 +193,8 @@ namespace CityCode.MandateSystem.Application.Extentions
             if (!string.IsNullOrWhiteSpace(request.Location))
                 query = query.Where(x => x.Location.Contains(request.Location));
 
-            query.ApplySearch(request.SearchField, request.SearchTerm);
+            query = query.ApplySearch(request.SearchField, request.SearchTerm);
+
 
             return query;
         }
