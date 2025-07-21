@@ -206,27 +206,36 @@ namespace CityCode.MandateSystem.Application.Extentions
         }
 
         public static IQueryable<T> ApplySearch<T>(
-        this IQueryable<T> query,
-        string? searchField,
-        string? searchTerm)
+            this IQueryable<T> query,
+            string? searchField,
+            string? searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchField) || string.IsNullOrWhiteSpace(searchTerm))
                 return query;
 
             var property = typeof(T).GetProperty(searchField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             if (property == null || property.PropertyType != typeof(string))
-                return query; // Skip invalid property or non-string fields
+                return query; // Skip if invalid property or non-string field
 
             var parameter = Expression.Parameter(typeof(T), "x");
             var propertyAccess = Expression.Property(parameter, property.Name);
-            var searchTermConstant = Expression.Constant(searchTerm, typeof(string));
 
+            // Convert property value to lower: x.Property.ToLower()
+            var toLowerMethod = typeof(string).GetMethod(nameof(string.ToLower), Type.EmptyTypes)!;
+            var loweredProperty = Expression.Call(propertyAccess, toLowerMethod);
+
+            // Convert search term to lower
+            var loweredSearchTerm = searchTerm.ToLower();
+            var searchTermConstant = Expression.Constant(loweredSearchTerm, typeof(string));
+
+            // Check if property contains the search term
             var containsMethod = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
-            var containsCall = Expression.Call(propertyAccess, containsMethod, searchTermConstant);
+            var containsCall = Expression.Call(loweredProperty, containsMethod, searchTermConstant);
 
             var lambda = Expression.Lambda<Func<T, bool>>(containsCall, parameter);
             return query.Where(lambda);
         }
+
 
     }
 }
