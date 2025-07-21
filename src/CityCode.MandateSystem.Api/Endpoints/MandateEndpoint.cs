@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityCode.MandateSystem.Api.Extentions;
+using CityCode.MandateSystem.Application.Query;
 using CityCode.MandateSystem.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,20 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 return result;
             })
             .WithDisplayName("Approve mandate").RequirePermission(PermissionConstants.ApproveMandate);
+
+            group.MapPost("/get-mandate-request", async ([AsParameters] GetMandateRequestQuery command, ISender sender) =>
+            {
+                var result = await sender.Send(command);
+                return result;
+            })
+            .WithDisplayName("Get Requests");
+
+            group.MapPost("/get-mandates", async ([AsParameters] GetMandateRequestQuery command, ISender sender) =>
+            {
+                var result = await sender.Send(command);
+                return result;
+            })
+            .WithDisplayName("Get Mandates");
 
             return group;
         }
