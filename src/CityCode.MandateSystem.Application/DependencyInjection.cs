@@ -1,4 +1,6 @@
 
+using CityCode.MandateSystem.Application.Services.UtilityServices;
+using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Application.Settings;
 using StackExchange.Redis;
 
@@ -15,6 +17,7 @@ public static class DependencyInjection
 
         services.AddTransient<IGenericServices, GenericServices>();
         services.AddTransient<IInfoBipService, InfoBipService>();  
+        services.AddTransient<IMandateService, MandateService>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings").Bind);
         services.Configure<SystemSettings>(configuration.GetSection("SystemSettings").Bind);
 

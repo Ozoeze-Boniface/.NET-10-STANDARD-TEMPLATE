@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
-    public class ApproveMandateCommand : IRequest<Common.Models.View.Result<Mandate>>
+    public class ApproveMandateCommand : IRequest<Common.Models.View.Result<object>>
     {
         public long MandateId { get; set; }
         public long ApproverId { get; set; }
