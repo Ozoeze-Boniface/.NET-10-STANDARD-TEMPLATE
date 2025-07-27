@@ -1,4 +1,5 @@
 namespace CityCode.MandateSystem.Application.ExternalServices;
+
 public partial interface IGenericServices
 {
 
@@ -18,4 +19,5 @@ public partial interface IGenericServices
     string getResponse(HttpWebRequest request);
     string GetTagContent(string mainContent, string node, string tagType);
     string GetTagContentFromJson(string mainContent, string node, string closeTag);
+    Task<string> LogINToNibbs();
 }
