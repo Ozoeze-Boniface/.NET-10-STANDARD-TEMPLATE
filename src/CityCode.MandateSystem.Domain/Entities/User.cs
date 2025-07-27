@@ -51,10 +51,11 @@ namespace CityCode.MandateSystem.Domain.Entities
         {
             Permission = permissions?.Select(s => new Permission
             {
-                Description = s.Description,
-                Action = s.Action,
-                Name = s.Resource,
+                Description = s.Description ?? "Creation",
+                Action = s.Action ?? "User",
+                Name = s.Name,
                 IsActive = true,
+                Resource = s.Resource??s.Name
             }).ToList() ?? null!;
         }
 

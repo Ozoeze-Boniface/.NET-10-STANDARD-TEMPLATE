@@ -16,9 +16,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
-        public bool IsSuperAdim { get; set; } = false;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; set; }
         public bool IsSuperAdmin { get; set; } = false;
@@ -35,7 +33,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (userExists)
                 return Common.Models.View.Result<User>.Failure("User already exists");
 
-            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.Now, request.Role, request.IsSuperAdim);
+            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, request.Role, request.IsSuperAdmin);
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);
