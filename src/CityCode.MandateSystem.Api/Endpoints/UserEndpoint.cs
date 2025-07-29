@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityCode.MandateSystem.Api.Extentions;
+using CityCode.MandateSystem.Application.Query;
 using CityCode.MandateSystem.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,13 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 return result;
             })
             .WithDisplayName("Create User").RequirePermission(PermissionConstants.CreateUser);
+
+            group.MapGet("/get-users", async ([AsParameters]GetUsersQuery query, ISender sender) =>
+           {
+               var result = await sender.Send(query);
+               return result;
+           })
+           .WithDisplayName("Get Users");
 
             return group;
         }

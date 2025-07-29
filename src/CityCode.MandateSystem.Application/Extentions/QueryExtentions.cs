@@ -199,10 +199,20 @@ namespace CityCode.MandateSystem.Application.Extentions
             return query;
         }
 
-        public static IQueryable<T> ApplyPagination<T>(this IQueryable<T> query, int pageNumber, int pageSize)
+        public static IQueryable<User> ApplyUserFilter(
+            this IQueryable<User> query,
+            GetUsersQuery request)
         {
-            int skip = (pageNumber - 1) * pageSize;
-            return query.Skip(skip).Take(pageSize);
+            if (request == null)
+                return query;
+
+            if (request.UserId is not null)
+                query = query.Where(x => x.UserId == request.UserId);
+
+            if (request.Active is not null)
+                query = query.Where(x => x.IsActive == request.Active);
+
+            return query;
         }
 
         public static IQueryable<T> ApplySearch<T>(
