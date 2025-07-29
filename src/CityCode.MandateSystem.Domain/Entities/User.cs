@@ -55,13 +55,18 @@ namespace CityCode.MandateSystem.Domain.Entities
                 Action = s.Action ?? "User",
                 Name = s.Name,
                 IsActive = true,
-                Resource = s.Resource??s.Name
+                Resource = s.Resource ?? s.Name
             }).ToList() ?? null!;
         }
 
         public void SetPassword(string password)
         {
             PasswordHash = password;
+        }
+
+        public void ChangeUserStatus(bool status)
+        {
+            IsActive = status;
         }
     }
 
