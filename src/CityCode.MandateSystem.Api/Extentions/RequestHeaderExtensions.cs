@@ -13,7 +13,7 @@ namespace CityCode.MandateSystem.Api.Extentions
     public static class RequestHeaderExtensions
     {
 
-        private static (bool IsValid, IEnumerable<Claim>, string ErrorMessage) ValidateTokenExpiration(string token)
+        public static (bool IsValid, IEnumerable<Claim>, string ErrorMessage) ValidateTokenExpiration(string token)
         {
             try
             {

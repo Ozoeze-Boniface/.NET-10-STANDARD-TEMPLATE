@@ -19,6 +19,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Permission> Permissions => this.Set<Permission>();
     public DbSet<Mandate> Mandates => this.Set<Mandate>();
     public DbSet<MandateRequest> MandateRequests => this.Set<MandateRequest>();
+    public DbSet<Activity> Activities => this.Set<Activity>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)

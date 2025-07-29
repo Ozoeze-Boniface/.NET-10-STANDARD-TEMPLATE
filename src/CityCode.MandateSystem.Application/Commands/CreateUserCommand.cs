@@ -6,6 +6,7 @@ using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Domain.DomainDto;
 using CityCode.MandateSystem.Domain.Enums;
+using CityCode.MandateSystem.Domain.Events.ActivityLog;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
@@ -37,6 +38,7 @@ namespace CityCode.MandateSystem.Application.Commands
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);
+            user.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Created User", DateCreated = DateTime.UtcNow, Entity = "Users" }));
             await _context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<User>.Success(DateTime.Now, user);
         }

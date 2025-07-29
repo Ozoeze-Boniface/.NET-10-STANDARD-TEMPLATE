@@ -27,6 +27,20 @@ namespace CityCode.MandateSystem.Api.Endpoints
            })
            .WithDisplayName("Get Users");
 
+            group.MapPut("/activate-deactivate-user", async ([AsParameters]ActivateDeactivateUserCommand command, ISender sender) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("Activate or Deactivate Users").RequirePermission(PermissionConstants.ActivateDeactivateUser);
+
+            group.MapDelete("/delete-user", async ([AsParameters] DeleteUserCommand command, ISender sender) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("Get Users").RequirePermission(PermissionConstants.EditUser);
+
             return group;
         }
     }
