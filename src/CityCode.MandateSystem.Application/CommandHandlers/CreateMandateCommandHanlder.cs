@@ -30,7 +30,7 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
             mandateRequest.SetInitiatorDetails(request.InitiatedBy, request.InitiatedById);
             await _context.MandateRequests.AddAsync(mandateRequest);
 
-            mandateRequest.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Initiated Mandate creation", DateCreated = DateTime.UtcNow, Entity = "Users" }));
+            mandateRequest.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Initiated Mandate creation", DateCreated = DateTime.UtcNow, Entity = "MandateRequest" }));
 
             await _context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<MandateRequest>.Success(DateTime.UtcNow, mandateRequest);
