@@ -15,6 +15,18 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 var result = await send.Send(command);
                 return result;
             }).WithDisplayName("Authentication");
+
+            group.MapPost("/initiate-reset-password", async (InitiateResetPasswordCommand command, ISender send) =>
+            {
+                var result = await send.Send(command);
+                return result;
+            }).WithDisplayName("Initiate Reset Password");
+
+            group.MapPost("/reset-password", async (ResetPasswordCommand command, ISender send) =>
+            {
+                var result = await send.Send(command);
+                return result;
+            }).WithDisplayName("Reset Password");
             
             return group;
         }

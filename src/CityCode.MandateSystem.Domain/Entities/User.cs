@@ -20,6 +20,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public bool IsActive { get; private set; } = true;
         public Role Role { get; set; }
         public DateTime? LastLogin { get; private set; }
+        public string? Otp { get; set; }
         public virtual List<Permission>? Permission { get; private set; }
 
 
@@ -33,7 +34,8 @@ namespace CityCode.MandateSystem.Domain.Entities
             bool isActive,
             DateTime? lastLogin,
             Role role,
-            bool isSuperAdmin)
+            bool isSuperAdmin,
+            string? createdBy)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -45,6 +47,7 @@ namespace CityCode.MandateSystem.Domain.Entities
             LastLogin = lastLogin;
             Role = role;
             IsSuperAdmin = isSuperAdmin;
+            CreatedBy = createdBy;
         }
 
         public void WithPermissions(List<PermissionDto>? permissions)
@@ -67,6 +70,11 @@ namespace CityCode.MandateSystem.Domain.Entities
         public void ChangeUserStatus(bool status)
         {
             IsActive = status;
+        }
+
+        public void SetOtp(string otp)
+        {
+            Otp = otp;
         }
     }
 
