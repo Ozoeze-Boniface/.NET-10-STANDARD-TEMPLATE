@@ -9,5 +9,6 @@ namespace CityCode.MandateSystem.Application.Settings
     {
         public int ProductId { get; set; }
         public int BillerId { get; set; }
+        public EmailSettings? EmailSettings { get; set; }
     }
 }

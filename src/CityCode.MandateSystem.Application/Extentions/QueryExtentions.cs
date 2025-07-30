@@ -83,10 +83,10 @@ namespace CityCode.MandateSystem.Application.Extentions
                 query = query.Where(x => x.MandateRequestStatus == request.MandateRequestStatus);
 
             if (request.StartDate is not null)
-                query = query.Where(x => x.StartDate >= request.StartDate);
+                query = query.Where(x => x.DateCreated >= request.StartDate);
 
             if (request.EndDate is not null)
-                query = query.Where(x => x.EndDate <= request.EndDate);
+                query = query.Where(x => x.DateCreated <= request.EndDate);
 
             if (request.PaymentFrequency is not null)
                 query = query.Where(x => x.PaymentFrequency == request.PaymentFrequency);
@@ -182,10 +182,10 @@ namespace CityCode.MandateSystem.Application.Extentions
                 query = query.Where(x => x.MandateType == request.MandateType);
 
             if (request.StartDate is not null)
-                query = query.Where(x => x.StartDate >= request.StartDate);
+                query = query.Where(x => x.DateCreated >= request.StartDate);
 
             if (request.EndDate is not null)
-                query = query.Where(x => x.EndDate <= request.EndDate);
+                query = query.Where(x => x.DateCreated <= request.EndDate);
 
             if (request.PaymentFrequency is not null)
                 query = query.Where(x => x.PaymentFrequency == request.PaymentFrequency);
@@ -211,6 +211,12 @@ namespace CityCode.MandateSystem.Application.Extentions
 
             if (request.Active is not null)
                 query = query.Where(x => x.IsActive == request.Active);
+
+            if (request.StartDate is not null)
+                query = query.Where(x => x.DateCreated >= request.StartDate);
+
+            if (request.EndDate is not null)
+                query = query.Where(x => x.DateCreated <= request.EndDate);
 
             return query;
         }
