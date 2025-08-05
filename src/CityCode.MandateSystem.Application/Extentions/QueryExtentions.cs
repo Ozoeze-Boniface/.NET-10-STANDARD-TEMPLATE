@@ -96,7 +96,7 @@ namespace CityCode.MandateSystem.Application.Extentions
 
             query = query.ApplySearch(request.SearchField, request.SearchTerm);
 
-            return query;
+            return query.OrderByDescending(p => p.DateCreated);
         }
 
         public static IQueryable<Mandate> ApplyFilters(
@@ -196,7 +196,7 @@ namespace CityCode.MandateSystem.Application.Extentions
             query = query.ApplySearch(request.SearchField, request.SearchTerm);
 
 
-            return query;
+            return query.OrderByDescending(p => p.DateCreated);
         }
 
         public static IQueryable<User> ApplyUserFilter(
@@ -218,7 +218,7 @@ namespace CityCode.MandateSystem.Application.Extentions
             if (request.EndDate is not null)
                 query = query.Where(x => x.DateCreated <= request.EndDate);
 
-            return query;
+            return query.OrderByDescending(p => p.DateCreated);
         }
 
         public static IQueryable<T> ApplySearch<T>(
