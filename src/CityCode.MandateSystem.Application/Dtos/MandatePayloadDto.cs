@@ -51,6 +51,30 @@ namespace CityCode.MandateSystem.Application.Dtos
 
         [JsonPropertyName("description")]
         public string? Description { get; set; }
+
+        [JsonPropertyName("accountName")]
+        public string? AccountName { get; set; }
+
+        [JsonPropertyName("accountNumber")]
+        public string? AccountNumber { get; set; }
+
+        [JsonPropertyName("mandateStatus")]
+        public string? MandateStatus { get; set; }
+
+        [JsonPropertyName("workflowStatus")]
+        public string? WorkflowStatus { get; set; }
+
+        [JsonPropertyName("rejectionReason")]
+        public string? RejectionReason { get; set; }
+
+        [JsonPropertyName("rejectionComment")]
+        public string? RejectionComment { get; set; }
+
+        [JsonPropertyName("mandateAdviceStatus")]
+        public string? MandateAdviceStatus { get; set; }
+
+        [JsonPropertyName("mandateAdviceSent")]
+        public int MandateAdviceSent { get; set; }
     }
 
 }

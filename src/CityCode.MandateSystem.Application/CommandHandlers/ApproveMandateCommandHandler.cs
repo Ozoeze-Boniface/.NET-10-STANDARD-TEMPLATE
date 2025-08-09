@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Commands;
+using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Domain.Enums;
 
@@ -28,12 +29,12 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
             var mandateRequest = await _context.MandateRequests.FindAsync(request.MandateId);
             if (mandateRequest == null)
             {
-                return Common.Models.View.Result<object>.Failure("Mandate not found");
+                throw new BadRequestException("Mandate request not found");
             }
             var mandateExists = await _context.Mandates.AnyAsync(m => m.MandateReference == mandateRequest.MandateReference);
             if (mandateExists)
             {
-                return Common.Models.View.Result<object>.Failure("Mandate already exists");
+                throw new BadRequestException("Mandate already exixts");
             }
             var mandate = _mapper.Map<Mandate>(mandateRequest);
             mandate.UpdateMandateStatus(MandateStatus.INACTIVE);

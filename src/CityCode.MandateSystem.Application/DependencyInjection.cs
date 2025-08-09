@@ -14,10 +14,26 @@ public static class DependencyInjection
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         // services.AddAutoMapper(typeof(Mapper).Assembly);
 
-        services.AddHttpClient();
+        services.AddHttpClient("NibssClient", client =>
+        {
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                // Accept all certs (DEV ONLY, remove in prod)
+                // ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            return handler;
+        });
 
         services.AddTransient<IGenericServices, GenericServices>();
-        services.AddTransient<IInfoBipService, InfoBipService>();  
+        services.AddTransient<IInfoBipService, InfoBipService>();
         services.AddTransient<IMandateService, MandateService>();
         services.AddScoped<IEmailService, EmailService>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings").Bind);

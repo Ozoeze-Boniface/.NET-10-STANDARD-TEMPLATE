@@ -1,69 +1,66 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Extentions;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
+using CityCode.MandateSystem.Application.Settings;
+using Microsoft.Extensions.Options;
 
-namespace CityCode.MandateSystem.Application.Services.UtilityServices
+public class MandateService : IMandateService
 {
-    public class MandateService(IGenericServices genericServices) : IMandateService
+    private readonly IGenericServices _genericServices;
+    private readonly NibssSettings _nibssSettings;
+
+    public MandateService(IGenericServices genericServices, IOptions<SystemSettings> options)
     {
-        private readonly IGenericServices _genericServices = genericServices;
+        _genericServices = genericServices;
+        _nibssSettings = options.Value.NibssSettings ?? throw new ArgumentNullException(nameof(options.Value.NibssSettings));
+    }
 
-        public async Task<MandateCreationResponse> CreateMandateAsync(Mandate mandate)
+    public async Task<MandateCreationResponse> CreateMandateAsync(Mandate mandate)
+    {
+        var token = await _genericServices.LogINToNibbs();
+
+        var headers = new Dictionary<string, string>()
         {
-            var token = await _genericServices.LogINToNibbs();
+            {"Accept", "application/json"},
+            {"Authorization", $"Bearer {token}"}
+        };
+        var payload = mandate.CreateMandatePayload();
+        var createMandateResponse = await _genericServices.ConsumeRestAPIText(_nibssSettings.CreateMandateUrl, payload, headers);
 
-            // CALL NIBBS AUTHENTICATION API
-            var headers = new Dictionary<string, string>()
-            {
-                {"Accept", "application/json"},
-                {"Authorization", token}
-            };
-            var payload = mandate.CreateMandatePayload();
-            var createMandateEndpoint = "https://apitest.nibss-plc.com.ng/ndd/api/MandateRequest/CreateEmandate";
-            var createMandateResponse = await _genericServices.ConsumeRestAPIText(createMandateEndpoint, payload, headers);
+        var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
+        return mandateResponse ?? throw new BadRequestException("Failed to create mandate. Please try again later or contact support.");
+    }
 
-            var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
-            return mandateResponse ?? throw new BadRequestException("Failed to create mandate. Please try again later or contact support.");
+    public async Task<MandateCreationResponse> ActivateMandate(Mandate mandate)
+    {
+        var token = await _genericServices.LogINToNibbs();
+        var mandatePayload = mandate.FormaMandateActivationPayload();
 
-        }
-
-        public async Task<MandateCreationResponse> ActivateMandate(Mandate mandate)
+        var headers = new Dictionary<string, string>()
         {
-            var token = await _genericServices.LogINToNibbs();
-            var mandatePayload = mandate.FormaMandateActivationPayload();
-            // CALL NIBBS AUTHENTICATION API
-            var headers = new Dictionary<string, string>()
-            {
-                {"Accept", "application/json"},
-                {"Authorization", token}
-            };
-            var payload = JsonConvert.SerializeObject(mandatePayload);
-            var activateMandateResponse = "https://apitest.nibss-plc.com.ng/ndd/api/MandateRequest/UpdateMandateStatus";
-            var createMandateResponse = await _genericServices.ConsumeRestAPIText(activateMandateResponse, payload, headers);
+            {"Accept", "application/json"},
+            {"Authorization", $"Bearer {token}"}
+        };
+        var createMandateResponse = await _genericServices.ConsumeRestAPIText(_nibssSettings.UpdateMandateStatusUrl, mandatePayload, headers);
 
-            var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
-            return mandateResponse ?? throw new BadRequestException("Failed to create mandate. Please try again later or contact support.");
-        }
+        var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
+        return mandateResponse ?? throw new BadRequestException("Failed to activate mandate. Please try again later or contact support.");
+    }
+    
+    public async Task<MandateCreationResponse> GetMandateStatus(string mandateCode)
+    {
+        var token = await _genericServices.LogINToNibbs();
         
-        public async Task<MandateCreationResponse> GetMandateStatus(string mandateCode)
+        var headers = new Dictionary<string, string>()
         {
-            var token = await _genericServices.LogINToNibbs();
-            // CALL NIBBS AUTHENTICATION API
-            var headers = new Dictionary<string, string>()
-            {
-                {"Accept", "application/json"},
-                {"Authorization", token}
-            };
-            var mandateStatusEndpoint = $"https://apitest.nibss-plc.com.ng/ndd/api/MandateRequest/MandateStatus?MandateCode={mandateCode}";
-            var createMandateResponse = await _genericServices.ConsumeRestAPIText(mandateStatusEndpoint, mandateStatusEndpoint, headers);
+            {"Accept", "application/json"},
+            {"Authorization", $"Bearer {token}"}
+        };
+        var mandateStatusEndpoint = $"{_nibssSettings.MandateStatusUrl}?MandateCode={mandateCode}";
+        var createMandateResponse = await _genericServices.ConsumeRestAPIText(mandateStatusEndpoint, mandateStatusEndpoint, headers);
 
-            var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
-            return mandateResponse ?? throw new BadRequestException("Failed to create mandate. Please try again later or contact support.");
-        }
+        var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
+        return mandateResponse ?? throw new BadRequestException("Failed to get mandate status. Please try again later or contact support.");
     }
 }
