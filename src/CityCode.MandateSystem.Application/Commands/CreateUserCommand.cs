@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
@@ -35,7 +36,7 @@ namespace CityCode.MandateSystem.Application.Commands
         {
             var userExists = await _context.AppUsers.AnyAsync(x => x.Email == request.Email);
             if (userExists)
-                return Common.Models.View.Result<User>.Failure("User already exists");
+                throw new BadRequestException("User already exists");
 
             var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, request.Role, request.IsSuperAdmin, request.InitiatedBy);
             user.WithPermissions(request.Permission);

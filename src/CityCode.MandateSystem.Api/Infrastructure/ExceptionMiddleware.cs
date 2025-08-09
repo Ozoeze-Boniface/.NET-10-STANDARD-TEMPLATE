@@ -47,7 +47,7 @@ namespace SeaBaas.CentralJournalPosting.Api.Infrastructure
                 case BadRequestException :
                 case EntityNotFoundException:
                 case ConflictException:
-                    code = HttpStatusCode.OK;
+                    code = HttpStatusCode.BadRequest;
                     result = JsonConvert.SerializeObject(
                         Result<dynamic>.Failure(requestTime, exception.Message, exception.HResult)
                     );
@@ -67,7 +67,7 @@ namespace SeaBaas.CentralJournalPosting.Api.Infrastructure
                     break;
             }
 
-            _logger.LogError(exception.Message, exception);
+            _logger.LogError(exception, exception.Message);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
             if (  exception is ValidationException ex)
