@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./dockerfile-worker # Using the worker's Dockerfile
+          file: ./Dockerfile-worker # Using the worker's Dockerfile
           push: true
           tags: |
             ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:${{ github.run_number }}-dev
