@@ -36,7 +36,7 @@ builder.Services.AddSingleton(consumerConfig);
 var topic = kafkaSettings.Topic;
 
 builder.Services.AddSingleton(topic);
-
+builder.Services.AddHostedService<ScheduleUpdateWorker>();
 // builder.Services.AddHostedService<SampleWorker>();
 // builder.Services.AddApplicationServices();
 // builder.Services.AddInfrastructureServices(builder.Configuration);

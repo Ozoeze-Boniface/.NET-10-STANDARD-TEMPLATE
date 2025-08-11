@@ -20,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Mandate> Mandates => this.Set<Mandate>();
     public DbSet<MandateRequest> MandateRequests => this.Set<MandateRequest>();
     public DbSet<Activity> Activities => this.Set<Activity>();
+    public DbSet<MandateSchedule> MandateSchedules => this.Set<MandateSchedule>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
