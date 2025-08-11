@@ -26,18 +26,29 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             set -e
-            IMAGE_NAME="ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest"
-            CONTAINER_NAME="mandateapidev-container" # Define the consistent container name
-            
+            # Define names for both API and Worker services
+            API_IMAGE="ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest"
+            WORKER_IMAGE="ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:dev-latest"
+            API_CONTAINER="mandateapidev-container"
+            WORKER_CONTAINER="mandateworker"
+
             echo "--- Logging in to GHCR ---"
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+            echo "--- Pulling latest images ---"
+            docker pull $API_IMAGE
+            docker pull $WORKER_IMAGE
+
+            echo "--- Stopping and removing old API container ---"
+            docker stop $API_CONTAINER || true
+            docker rm $API_CONTAINER || true
             
-            echo "--- Pulling latest image: $IMAGE_NAME ---"
-            docker pull $IMAGE_NAME
+            echo "--- Stopping and removing old Worker container ---"
+            docker stop $WORKER_CONTAINER || true
+            docker rm $WORKER_CONTAINER || true
+
+            echo "--- Starting new API container ---"
+            docker run -d --name $API_CONTAINER --restart=unless-stopped -p 9001:8080 $API_IMAGE
             
-            echo "--- Stopping and removing old container: $CONTAINER_NAME ---"
-            docker stop $CONTAINER_NAME || true
-            docker rm $CONTAINER_NAME || true
-            
-            echo "--- Starting new container ---"
-            docker run -d --name $CONTAINER_NAME --restart=unless-stopped -p 9001:8080 $IMAGE_NAME
+            echo "--- Starting new Worker container ---"
+            docker run -d --name $WORKER_CONTAINER --restart=unless-stopped $WORKER_IMAGE
