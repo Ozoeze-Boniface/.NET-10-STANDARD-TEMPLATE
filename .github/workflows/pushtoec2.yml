@@ -1,4 +1,4 @@
-name: Automatic Deploy to EC2
+name: Automatic Deploy to EC2.
 
 on:
   workflow_run:
