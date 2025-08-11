@@ -9,6 +9,9 @@ using CityCode.MandateSystem.Infrastructure.Data;
 using ZymLabs.NSwag.FluentValidation;
 using StackExchange.Redis;
 using Serilog.Sinks.Elasticsearch;
+using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
+using CityCode.MandateSystem.Application.ExternalServices;
+using CityCode.MandateSystem.Application.Settings;
 
 public static class DependencyInjection
 {
@@ -26,7 +29,28 @@ public static class DependencyInjection
 
         Ardalis.GuardClauses.Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
 
-        services.AddScoped<IDapperContext, DapperContext>();
+        services.AddSingleton<IDapperContext, DapperContext>();
+        services.AddSingleton<IMandateService, MandateService>();
+        services.AddSingleton<IGenericServices, GenericServices>();
+        services.Configure<SystemSettings>(configuration.GetSection("SystemSettings").Bind);
+
+        services.AddHttpClient("NibssClient", client =>
+        {
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                // Accept all certs (DEV ONLY, remove in prod)
+                // ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            return handler;
+        });
 
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
@@ -43,7 +67,7 @@ public static class DependencyInjection
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
-        services.AddScoped(provider =>
+        services.AddSingleton(provider =>
         {
             var validationRules = provider.GetService<IEnumerable<FluentValidationRule>>();
             var loggerFactory = provider.GetService<ILoggerFactory>();

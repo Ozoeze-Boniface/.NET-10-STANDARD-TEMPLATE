@@ -55,6 +55,9 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
             _logger.LogInformation("Mandate Status Response: {Response}", JsonConvert.SerializeObject(mandateStatusResponse));
             mandate.UpdateWorkflow(WorkflowStatus.BILLER_INITIATED);
 
+            //INSERT INTO SCHEDULE TABLE
+            var schedule = new MandateSchedule(mandate.MandateId, mandate.MandateReference, mandate.NibbsMandateCode!, mandate.WorkflowStatus!.Value, mandate.StartDate, mandate.EndDate, mandate.PaymentFrequency);
+            await _context.MandateSchedules.AddAsync(schedule);
             await _context.Mandates.AddAsync(mandate);
 
             await _context.SaveChangesAsync(cancellationToken);
