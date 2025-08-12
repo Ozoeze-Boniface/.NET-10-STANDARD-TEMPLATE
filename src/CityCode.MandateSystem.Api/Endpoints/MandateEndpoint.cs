@@ -41,13 +41,13 @@ namespace CityCode.MandateSystem.Api.Endpoints
             })
             .WithDisplayName("Get Mandates");
 
-            group.MapGet("/get-branches", async (ISender sender) =>
+            group.MapGet("/get-banks", async (ISender sender) =>
             {
                 var query = new GetBankQuery();
                 var result = await sender.Send(query);
                 return result;
             })
-            .WithDisplayName("Get Mandates");
+            .WithDisplayName("Get Banks");
 
             return group;
         }
