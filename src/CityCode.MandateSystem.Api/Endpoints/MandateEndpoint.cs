@@ -47,7 +47,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 var result = await sender.Send(query);
                 return result;
             })
-            .WithDisplayName("Get Mandates");
+            .WithDisplayName("Get Banks");
 
             return group;
         }
