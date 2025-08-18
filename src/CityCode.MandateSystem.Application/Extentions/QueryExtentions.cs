@@ -252,6 +252,15 @@ namespace CityCode.MandateSystem.Application.Extentions
             return query.Where(lambda);
         }
 
+        public static IQueryable<Activity> ApplyActivityFilter(this IQueryable<Activity> query, GetActivityLogQuery request)
+        {
+            if (request.ActorId.HasValue)
+            {
+                query = query.Where(x => x.Actor == request.ActorId);
+            }
+
+            return query.OrderByDescending(x => x.DateCreated);
+        }
 
     }
 }
