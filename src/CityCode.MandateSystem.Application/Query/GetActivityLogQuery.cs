@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common.Mappings;
 using CityCode.MandateSystem.Application.Common.Models;
 using CityCode.MandateSystem.Application.Common.Models.View;
+using CityCode.MandateSystem.Application.Extentions;
 using CityCode.MandateSystem.Domain.Events.ActivityLog;
 
 namespace CityCode.MandateSystem.Application.Query
@@ -22,7 +23,7 @@ namespace CityCode.MandateSystem.Application.Query
 
         public async Task<Common.Models.View.Result<PaginatedList<Activity>>> Handle(GetActivityLogQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Activities.AsQueryable();
+            var query = _context.Activities.AsQueryable().ApplyActivityFilter(request);
 
             var result = await query.PaginatedListAsync(request.PageNumber ?? 1, request.PageSize ?? 50);
 
