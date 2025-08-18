@@ -76,6 +76,60 @@ namespace CityCode.MandateSystem.Domain.Entities
         {
             Otp = otp;
         }
+
+        public void Update(
+            string? firstName = null,
+            string? lastName = null,
+            string? email = null,
+            string? phoneNumber = null,
+            string? username = null,
+            bool? isActive = null,
+            DateTime? lastLogin = null,
+            Role? role = null,
+            bool? isSuperAdmin = null,
+            List<PermissionDto>? permissions = null
+        )
+        {
+            if (!string.IsNullOrWhiteSpace(firstName))
+                FirstName = firstName;
+
+            if (!string.IsNullOrWhiteSpace(lastName))
+                LastName = lastName;
+
+            if (!string.IsNullOrWhiteSpace(email))
+                Email = email;
+
+            if (!string.IsNullOrWhiteSpace(phoneNumber))
+                PhoneNumber = phoneNumber;
+
+            if (!string.IsNullOrWhiteSpace(username))
+                Username = username;
+
+            if (isActive.HasValue)
+                IsActive = isActive.Value;
+
+            if (lastLogin.HasValue)
+                LastLogin = lastLogin.Value;
+
+            if (role != null)
+                Role = role.Value;
+
+            if (isSuperAdmin.HasValue)
+                IsSuperAdmin = isSuperAdmin.Value;
+
+            if (permissions != null)
+            {
+                Permission = permissions.Select(s => new Permission
+                {
+                    Description = s.Description ?? "Creation",
+                    Action = s.Action ?? "User",
+                    Name = s.Name,
+                    IsActive = true,
+                    Resource = s.Resource ?? s.Name
+                }).ToList();
+            }
+        }
+
     }
 
 
