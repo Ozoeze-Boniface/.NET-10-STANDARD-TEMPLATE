@@ -39,7 +39,14 @@ namespace CityCode.MandateSystem.Api.Endpoints
                var result = await sender.Send(command);
                return result;
            })
-           .WithDisplayName("Get Users").RequirePermission(PermissionConstants.EditUser);
+           .WithDisplayName("delete Users").RequirePermission(PermissionConstants.EditUser);
+
+            group.MapDelete("/edit-user", async ([AsParameters] EditUserCommand command, ISender sender) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("edit Users").RequirePermission(PermissionConstants.EditUser);
 
             return group;
         }
