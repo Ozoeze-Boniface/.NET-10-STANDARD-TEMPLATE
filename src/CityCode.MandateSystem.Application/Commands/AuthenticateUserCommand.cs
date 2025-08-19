@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Settings;
@@ -49,7 +50,7 @@ namespace CityCode.MandateSystem.Application.Commands
                     var response = new AuthResponse(token, string.Empty, user);
                     return Common.Models.View.Result<AuthResponse>.Success(DateTime.Now, response);
                 }
-                return Common.Models.View.Result<AuthResponse>.Failure("Invalid Credentials");
+                throw new BadRequestException("Invalid credentials provided");
                 // hash inputed password and compare with the existsing hash; If match, log user in, otherwise, return unauthorized
 
             }
