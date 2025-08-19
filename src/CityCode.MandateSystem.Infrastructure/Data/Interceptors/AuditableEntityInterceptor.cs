@@ -39,13 +39,13 @@ public class AuditableEntityInterceptor(
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = this._user.Id;
+                entry.Entity.CreatedBy = this._user.Id ?? entry.Entity.CreatedBy;
                 entry.Entity.TimeCreated = this._dateTime.GetUtcNow();
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
-                entry.Entity.LastModifiedBy = this._user.Id;
+                entry.Entity.LastModifiedBy = this._user.Id ?? entry.Entity.LastModifiedBy;
                 entry.Entity.LastModifiedTime = this._dateTime.GetUtcNow();
             }
         }
