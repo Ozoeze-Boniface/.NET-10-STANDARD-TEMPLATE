@@ -19,7 +19,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public string? InitiatedBy { get; set; }
         public DateTime? LastLogin { get; set; }
         public bool IsSuperAdmin { get; set; } = false;
-        public virtual List<PermissionDto>? Permission { get; set; }
+        public List<PermissionDto>? Permission { get; set; }
     }
 
     public class EditUserCommandHandler(IApplicationDbContext context) : IRequestHandler<EditUserCommand, Common.Models.View.Result<User>>

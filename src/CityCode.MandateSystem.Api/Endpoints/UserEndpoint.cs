@@ -41,7 +41,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
            })
            .WithDisplayName("delete Users").RequirePermission(PermissionConstants.EditUser);
 
-            group.MapPut("/edit-user", async ([AsParameters] EditUserCommand command, ISender sender) =>
+            group.MapPut("/edit-user", async ([FromBody] EditUserCommand command, ISender sender) =>
            {
                var result = await sender.Send(command);
                return result;
