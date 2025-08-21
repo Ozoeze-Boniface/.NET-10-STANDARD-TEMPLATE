@@ -9,6 +9,7 @@ namespace CityCode.MandateSystem.Application.Commands
 {
     public class EditUserCommand : IRequest<Common.Models.View.Result<User>>
     {
+        public long Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -28,7 +29,7 @@ namespace CityCode.MandateSystem.Application.Commands
 
         public async Task<Common.Models.View.Result<User>> Handle(EditUserCommand request, CancellationToken cancellationToken)
         {
-            var user = context.AppUsers.FirstOrDefault(u => u.Email == request.Email);
+            var user = context.AppUsers.FirstOrDefault(u => u.UserId == request.Id);
             if (user == null)
                 throw new NotFoundException(request.Email, "User not found");
 
