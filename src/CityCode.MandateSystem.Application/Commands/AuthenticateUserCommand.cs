@@ -31,7 +31,7 @@ namespace CityCode.MandateSystem.Application.Commands
             var user = await _context.AppUsers.Include(s => s.Permission).FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user is null)
-                return Common.Models.View.Result<AuthResponse>.Failure("User details does not exist");
+                throw new BadRequestException("Invalid credentials provided");
 
             if (user.PasswordHash is null)
             {
