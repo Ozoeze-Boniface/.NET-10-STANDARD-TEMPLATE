@@ -258,6 +258,14 @@ namespace CityCode.MandateSystem.Application.Extentions
             {
                 query = query.Where(x => x.Actor == request.ActorId);
             }
+            if (request.StartDate.HasValue)
+            {
+                query = query.Where(x => x.DateCreated >= request.StartDate.Value);
+            }
+            if (request.EndDate.HasValue)
+            {
+                query = query.Where(x => x.DateCreated <= request.EndDate.Value);
+            }
 
             return query.OrderByDescending(x => x.DateCreated);
         }
