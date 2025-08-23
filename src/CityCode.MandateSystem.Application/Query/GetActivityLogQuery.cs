@@ -15,6 +15,8 @@ namespace CityCode.MandateSystem.Application.Query
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
         public long? ActorId { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     public class GetActivityLogQueryHandler(IApplicationDbContext context) : IRequestHandler<GetActivityLogQuery, Common.Models.View.Result<PaginatedList<Activity>>>
