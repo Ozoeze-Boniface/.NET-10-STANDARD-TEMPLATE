@@ -33,6 +33,9 @@ namespace CityCode.MandateSystem.Application.Commands
             if (user is null)
                 throw new BadRequestException("Invalid credentials provided");
 
+            if(!user.IsActive)
+                throw new BadRequestException("User has been deactivated. Please contact the administrator.");
+
             if (user.PasswordHash is null)
             {
                 var hashedPassword = HashPassword(request.Password);
