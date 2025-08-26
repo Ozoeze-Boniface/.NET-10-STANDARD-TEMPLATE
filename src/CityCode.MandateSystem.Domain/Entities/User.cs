@@ -18,7 +18,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public string? PasswordHash { get; private set; }
         public bool IsSuperAdmin { get; set; } = false;
         public bool IsActive { get; private set; } = true;
-        public Role Role { get; set; }
+        public string Role { get; set; }
         public DateTime? LastLogin { get; private set; }
         public string? Otp { get; set; }
         public virtual List<Permission>? Permission { get; private set; }
@@ -33,7 +33,7 @@ namespace CityCode.MandateSystem.Domain.Entities
             string passwordHash,
             bool isActive,
             DateTime? lastLogin,
-            Role role,
+            string role,
             bool isSuperAdmin,
             string? createdBy)
         {
@@ -85,7 +85,7 @@ namespace CityCode.MandateSystem.Domain.Entities
             string? username = null,
             bool? isActive = null,
             DateTime? lastLogin = null,
-            Role? role = null,
+            string? role = null,
             bool? isSuperAdmin = null,
             List<PermissionDto>? permissions = null
         )
@@ -112,7 +112,7 @@ namespace CityCode.MandateSystem.Domain.Entities
                 LastLogin = lastLogin.Value;
 
             if (role != null)
-                Role = role.Value;
+                Role = role;
 
             if (isSuperAdmin.HasValue)
                 IsSuperAdmin = isSuperAdmin.Value;

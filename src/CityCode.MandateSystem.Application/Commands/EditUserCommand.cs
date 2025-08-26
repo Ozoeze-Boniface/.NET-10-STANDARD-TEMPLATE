@@ -33,7 +33,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (user == null)
                 throw new NotFoundException(request.Email, "User not found");
 
-            user.Update(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, request.IsActive, request.LastLogin, request.Role, request.IsSuperAdmin, request.Permission);
+            user.Update(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, request.IsActive, request.LastLogin, "Admin User", request.IsSuperAdmin, request.Permission);
 
             await context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<User>.Success(DateTime.Now, user);
