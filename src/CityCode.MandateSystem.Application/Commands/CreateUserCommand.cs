@@ -38,7 +38,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (userExists)
                 throw new BadRequestException("User already exists");
 
-            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, request.Role, request.IsSuperAdmin, request.InitiatedBy);
+            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, "Admin User", request.IsSuperAdmin, request.InitiatedBy);
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);

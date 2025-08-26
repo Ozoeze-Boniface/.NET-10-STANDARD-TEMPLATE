@@ -36,7 +36,7 @@ namespace CityCode.MandateSystem.Infrastructure.Seeders
                     var existsing = await _context.AppUsers.AnyAsync(s => s.Email == email);
                     if (!existsing)
                     {
-                        var user = new User("System", "Admin", email, "08068854789", "system", null!, true, DateTime.UtcNow, Role.Admin, true, "System");
+                        var user = new User("System", "Admin", email, "08068854789", "system", null!, true, DateTime.UtcNow, "System User", true, "System");
                         user.WithPermissions(new List<Domain.DomainDto.PermissionDto>()
                         {
                             new Domain.DomainDto.PermissionDto
