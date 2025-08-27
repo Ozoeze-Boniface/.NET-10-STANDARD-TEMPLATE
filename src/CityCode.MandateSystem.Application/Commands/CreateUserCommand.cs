@@ -20,7 +20,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public string PhoneNumber { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
-        public Role Role { get; set; }
+        public string? Role { get; set; }
         public string? InitiatedBy { get; set; }
         public DateTime? LastLogin { get; set; }
         public bool IsSuperAdmin { get; set; } = false;
@@ -38,7 +38,7 @@ namespace CityCode.MandateSystem.Application.Commands
             if (userExists)
                 throw new BadRequestException("User already exists");
 
-            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, "Admin User", request.IsSuperAdmin, request.InitiatedBy);
+            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, request.Role??"System User", request.IsSuperAdmin, request.InitiatedBy);
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);
