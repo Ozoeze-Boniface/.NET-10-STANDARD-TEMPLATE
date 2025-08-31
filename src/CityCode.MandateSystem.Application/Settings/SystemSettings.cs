@@ -9,6 +9,7 @@ namespace CityCode.MandateSystem.Application.Settings
     {
         public int ProductId { get; set; }
         public int BillerId { get; set; }
+        public string BankCode { get; set; } = string.Empty;
         public EmailSettings? EmailSettings { get; set; }
         public NibssSettings? NibssSettings { get; set; }
     }
@@ -20,6 +21,16 @@ namespace CityCode.MandateSystem.Application.Settings
         public string MandateStatusUrl { get; set; } = string.Empty;
         // Auth-related values
         public string TokenUrl { get; set; } = string.Empty;
+        public string ApiKey { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string Scope { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
+        public string Cookie { get; set; } = string.Empty;
+        public FundsTransferSettings? FundsTransferSettings { get; set; }
+    }
+    public class FundsTransferSettings
+    {
+        public string TransferBaseUrl { get; set; } = string.Empty;
         public string ApiKey { get; set; } = string.Empty;
         public string ClientId { get; set; } = string.Empty;
         public string Scope { get; set; } = string.Empty;

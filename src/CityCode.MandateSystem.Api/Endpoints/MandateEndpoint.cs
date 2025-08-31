@@ -49,8 +49,15 @@ namespace CityCode.MandateSystem.Api.Endpoints
             })
             .WithDisplayName("Get Banks");
 
+            group.MapPost("/do-name-enquiry", async (ISender sender, [FromBody] DoNameEnquiryCommand command) =>
+            {
+                var result = await sender.Send(command);
+                return result;
+            })
+            .WithDisplayName("Do name enquiry");
+
             return group;
         }
-        
+
     }
 }

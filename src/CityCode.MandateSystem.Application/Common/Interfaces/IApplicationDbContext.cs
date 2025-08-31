@@ -17,6 +17,7 @@ public interface IApplicationDbContext
     DbSet<Activity> Activities { get; }
     DbSet<MandateSchedule> MandateSchedules  { get; }
     DbSet<Bank> Banks  { get; }
+    DbSet<MandateTransaction> MandateTransactions  { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -20,4 +20,5 @@ public partial interface IGenericServices
     string GetTagContent(string mainContent, string node, string tagType);
     string GetTagContentFromJson(string mainContent, string node, string closeTag);
     Task<string> LogINToNibbs();
+    Task<string> LogINToNibbsFundsTransfer();
 }
