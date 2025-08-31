@@ -23,5 +23,21 @@ namespace CityCode.MandateSystem.Application.Common
                 return otp.ToString("D6");
             }
         }
+
+        public static string GenerateTransactionId(string bankCode)
+        {
+            // Get current date in yyMMdd format
+            var datePart = DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyMMdd");
+            // Compose base string
+            var baseString = bankCode + datePart;
+            // Calculate remaining length for random digits
+            int randomLength = 30 - baseString.Length;
+            // Generate random digits
+            var random = new Random();
+            var randomDigits = new string(Enumerable.Range(0, randomLength)
+            .Select(_ => random.Next(0, 10).ToString()[0]).ToArray());
+            // Combine all parts
+            return baseString + randomDigits;
+        }
     }
 }

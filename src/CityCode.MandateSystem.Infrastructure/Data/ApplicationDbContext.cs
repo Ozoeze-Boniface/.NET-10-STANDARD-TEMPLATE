@@ -22,6 +22,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Activity> Activities => this.Set<Activity>();
     public DbSet<MandateSchedule> MandateSchedules => this.Set<MandateSchedule>();
     public DbSet<Bank> Banks => this.Set<Bank>();
+    public DbSet<MandateTransaction> MandateTransactions => this.Set<MandateTransaction>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)

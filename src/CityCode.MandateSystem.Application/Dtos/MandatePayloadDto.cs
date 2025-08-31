@@ -77,4 +77,25 @@ namespace CityCode.MandateSystem.Application.Dtos
         public int MandateAdviceSent { get; set; }
     }
 
+    public class MandateTransactionResponse
+    {
+        public string ResponseCode { get; set; } = string.Empty;
+        public string SessionID { get; set; } = string.Empty;
+        public string TransactionId { get; set; } = string.Empty;
+        public int ChannelCode { get; set; }
+        public string NameEnquiryRef { get; set; } = string.Empty;
+        public string DestinationInstitutionCode { get; set; } = string.Empty;
+        public string BeneficiaryAccountName { get; set; } = string.Empty;
+        public string BeneficiaryAccountNumber { get; set; } = string.Empty;
+        public string BeneficiaryKYCLevel { get; set; } = string.Empty;
+        public string BeneficiaryBankVerificationNumber { get; set; } = string.Empty;
+        public string OriginatorAccountName { get; set; } = string.Empty;
+        public string OriginatorAccountNumber { get; set; } = string.Empty;
+        public string OriginatorBankVerificationNumber { get; set; } = string.Empty;
+        public string OriginatorKYCLevel { get; set; } = string.Empty;
+        public string TransactionLocation { get; set; } = string.Empty;
+        public string Narration { get; set; } = string.Empty;
+        public string PaymentReference { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+    }
 }
