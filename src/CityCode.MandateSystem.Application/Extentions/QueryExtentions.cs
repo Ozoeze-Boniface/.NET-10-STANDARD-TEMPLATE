@@ -229,7 +229,8 @@ namespace CityCode.MandateSystem.Application.Extentions
             if (string.IsNullOrWhiteSpace(searchField) || string.IsNullOrWhiteSpace(searchTerm))
                 return query;
 
-            var property = typeof(T).GetProperty(searchField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            var property = typeof(T).GetProperty(searchField,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             if (property == null || property.PropertyType != typeof(string))
                 return query; // Skip if invalid property or non-string field
 
@@ -252,23 +253,51 @@ namespace CityCode.MandateSystem.Application.Extentions
             return query.Where(lambda);
         }
 
-        public static IQueryable<Activity> ApplyActivityFilter(this IQueryable<Activity> query, GetActivityLogQuery request)
+        public static IQueryable<Activity> ApplyActivityFilter(this IQueryable<Activity> query,
+            GetActivityLogQuery request)
         {
             if (request.ActorId.HasValue)
             {
                 query = query.Where(x => x.Actor == request.ActorId);
             }
+
             if (request.StartDate.HasValue)
             {
                 query = query.Where(x => x.DateCreated >= request.StartDate.Value);
             }
+
             if (request.EndDate.HasValue)
             {
                 query = query.Where(x => x.DateCreated <= request.EndDate.Value);
             }
-
+            
             return query.OrderByDescending(x => x.DateCreated);
         }
 
+        public static IQueryable<MandateTransaction> ApplyTransactionFilter(this IQueryable<MandateTransaction> query,
+            GetTransactionsQuery request)
+        {
+            if (request.TransactionStatus is not null)
+            {
+                query = query.Where(s => s.TransactionStatus == request.TransactionStatus);
+            }
+
+            if (request.StartDate is not null)
+            {
+                query = query.Where(t => t.DateCreated >= request.StartDate);
+            }
+
+            if (request.EndDate is not null)
+            {
+                query = query.Where(s => s.DateCreated <= request.EndDate);
+            }
+
+            if (request.MandateId is not null)
+            {
+                query = query.Where(t => t.MandateId == request.MandateId);
+            }
+
+            return query;
+        }
     }
 }
