@@ -8,7 +8,6 @@ public class ServiceDefinition : IEndpointDefinition
 {
         public void DefineEndPoints(WebApplication app)
         {
-
                 app.MapGroup("/auth")
                         .AuthGroup()
                         .RequireCors("corsapp")
@@ -33,9 +32,14 @@ public class ServiceDefinition : IEndpointDefinition
                         .RequireRateLimiting("LimitPolicy")
                         .WithTags("Activity Manager");
 
+                app.MapGroup("/transactions")
+                        .TransactionGroup()
+                        .RequireCors("corsapp")
+                        .RequireRateLimiting("LimitPolicy")
+                        .WithTags("Transactions Manager");
         }
+
         public void DefineServices(IServiceCollection services)
         {
-
         }
 }
