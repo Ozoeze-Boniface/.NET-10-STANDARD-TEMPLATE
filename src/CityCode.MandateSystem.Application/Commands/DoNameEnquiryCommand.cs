@@ -18,12 +18,14 @@ namespace CityCode.MandateSystem.Application.Commands
         public string TransactionId { get; set; } = string.Empty;
     }
 
-    public class DoNameEnquiryCommandHanler(IMandateService mandateService, IOptions<SystemSettings> options) : IRequestHandler<DoNameEnquiryCommand, Common.Models.View.Result<NameEnquiryResponse>>
+    public class DoNameEnquiryCommandHanler(IMandateService mandateService, IOptions<SystemSettings> options)
+        : IRequestHandler<DoNameEnquiryCommand, Common.Models.View.Result<NameEnquiryResponse>>
     {
         private readonly IMandateService _mandateService = mandateService;
         private readonly string _bankCode = options.Value.BankCode;
 
-        public async Task<Common.Models.View.Result<NameEnquiryResponse>> Handle(DoNameEnquiryCommand request, CancellationToken cancellationToken)
+        public async Task<Common.Models.View.Result<NameEnquiryResponse>> Handle(DoNameEnquiryCommand request,
+            CancellationToken cancellationToken)
         {
             request.TransactionId = Helpers.GenerateTransactionId(_bankCode);
             var result = await _mandateService.DoNameEnquiry(request);
@@ -34,9 +36,14 @@ namespace CityCode.MandateSystem.Application.Commands
 
     public class NameEnquiryResponse
     {
-        public string AccountNumber { get; set; } = string.Empty;
-        public string ChannelCode { get; set; } = string.Empty;
-        public string DestinationInstitutionCode { get; set; } = string.Empty;
+        public string ResponseCode { get; set; } = string.Empty;
+        public string SessionID { get; set; } = string.Empty;
         public string TransactionId { get; set; } = string.Empty;
+        public int ChannelCode { get; set; }
+        public string DestinationInstitutionCode { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
+        public string BankVerificationNumber { get; set; } = string.Empty;
+        public int KycLevel { get; set; }
     }
 }
