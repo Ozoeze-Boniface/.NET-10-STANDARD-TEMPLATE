@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Api.Extentions;
 using CityCode.MandateSystem.Application.Query;
 using CityCode.MandateSystem.Domain.Constants;
@@ -55,6 +51,13 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 return result;
             })
             .WithDisplayName("Do name enquiry");
+
+             group.MapPost("/deactivate-mandate", async (ISender sender, [FromBody] DeactivateMandateCommand command) =>
+            {
+                var result = await sender.Send(command);
+                return result;
+            })
+            .WithDisplayName("Deactivate mandate");
 
             return group;
         }
