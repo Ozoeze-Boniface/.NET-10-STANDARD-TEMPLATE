@@ -12,7 +12,7 @@ using CityCode.MandateSystem.Infrastructure.Identity;
 [SetUpFixture]
 public partial class Testing
 {
-    private static ITestDatabase _database;
+    private static ITestDatabase? _database;
     private static CustomWebApplicationFactory _factory = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
     private static string? _userId;
@@ -89,7 +89,7 @@ public partial class Testing
     {
         try
         {
-            await _database.ResetAsync();
+            await _database!.ResetAsync();
         }
         catch (Exception)
         {
@@ -132,7 +132,7 @@ public partial class Testing
     [OneTimeTearDown]
     public async Task RunAfterAnyTests()
     {
-        await _database.DisposeAsync();
+        await _database!.DisposeAsync();
         await _factory.DisposeAsync();
     }
 }
