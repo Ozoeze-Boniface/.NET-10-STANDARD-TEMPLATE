@@ -36,11 +36,12 @@ namespace CityCode.MandateSystem.Application.Extentions
 
         }
 
-        public static object BuildMandateTransactionPayload(this Mandate mandate, string bankcode)
+        public static object BuildMandateTransactionPayload(this Mandate mandate, string bankcode, decimal? amount = null)
         {
+            var transactionAmount = amount is null ? mandate.TransactionAmount.ToString("F2") : amount.ToString();
             return new
             {
-                amount = mandate.TransactionAmount.ToString("F2"),
+                amount = transactionAmount,
                 beneficiaryAccountName = mandate.BanksAccountName,
                 beneficiaryAccountNumber = mandate.BanksAccountNumber,
                 beneficiaryBankVerificationNumber = mandate.BanksBvn,
