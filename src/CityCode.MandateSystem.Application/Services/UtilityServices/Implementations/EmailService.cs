@@ -25,9 +25,34 @@ public class EmailService : IEmailService
 
             var subject = mailContent.Subject;
             var htmlBody = $@"
-                <h1>{mailContent.Header}</h1>
-                <br/>
-                <p>{mailContent.Body}</p>";
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                        <meta charset='UTF-8'>
+                        <title>{mailContent.Subject}</title>
+                        </head>
+                        <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;'>
+                        <table width='100%' cellspacing='0' cellpadding='0' style='max-width:600px; margin:auto; background:#ffffff; border-radius:6px; border:1px solid #e0e0e0;'>
+                            <tr>
+                            <td style='padding: 20px;'>
+                                
+                                <h2 style='color:#333333; margin-top:0;'>{mailContent.Header}</h2>
+                                
+                                <p style='color:#555555; font-size:15px; line-height:1.6; margin-bottom:20px;'>
+                                {mailContent.Body}
+                                </p>
+                                
+                                <hr style='border:none; border-top:1px solid #e0e0e0; margin:20px 0;'/>
+                                
+                                <p style='font-size:14px; color:#777777;'>
+                                Thank you,<br/>
+                                <strong>{_emailSettings.FromName}</strong>
+                                </p>
+                            </td>
+                            </tr>
+                        </table>
+                        </body>
+                        </html>";
 
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent: "", htmlContent: htmlBody);
             var response = await client.SendEmailAsync(msg);

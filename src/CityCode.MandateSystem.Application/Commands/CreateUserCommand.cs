@@ -43,7 +43,7 @@ namespace CityCode.MandateSystem.Application.Commands
 
             await _context.AppUsers.AddAsync(user);
             user.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Created User", DateCreated = DateTime.UtcNow, Entity = "Users" }));
-            var sent = await _emailService.SendEmail(user.Email, new MailContent { Header = "User created", Body = $"Dear {user.FullName}, welcome to city code mandate system", Subject = "WELCOME" });
+            var sent = await _emailService.SendEmail(user.Email, new MailContent { Header = "User created", Body = $"Dear {user.FullName}, welcome to city code mandate system. Please note that the password used upon signin will be your password until you reset the password", Subject = "WELCOME" });
             if (!sent)
             {
                 return Common.Models.View.Result<User>.Failure("Failed to send notification");
