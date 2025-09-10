@@ -12,7 +12,7 @@ namespace CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces
         Task<MandateCreationResponse> CreateMandateAsync(Mandate mandate);
         Task<MandateCreationResponse> ActivateMandate(Mandate mandate);
         Task<MandateCreationResponse> GetMandateStatus(string mandateCode);
-        Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate);
+        Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, decimal? amount = null);
         Task<NameEnquiryResponse> DoNameEnquiry(DoNameEnquiryCommand command);
     }
 }

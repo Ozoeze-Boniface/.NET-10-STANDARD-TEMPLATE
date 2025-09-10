@@ -67,10 +67,10 @@ public class MandateService : IMandateService
         return mandateResponse ?? throw new BadRequestException("Failed to get mandate status. Please try again later or contact support.");
     }
 
-    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate)
+    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, decimal? amount = null)
     {
         var token = await _genericServices.LogINToNibbsFundsTransfer();
-        var payload = mandate.BuildMandateTransactionPayload(bankcode: _bankCode);
+        var payload = mandate.BuildMandateTransactionPayload(bankcode: _bankCode, amount);
         var jsonPayload = JsonConvert.SerializeObject(payload);
         var headers = new Dictionary<string, string>()
         {

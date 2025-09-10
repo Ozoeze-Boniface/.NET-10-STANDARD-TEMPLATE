@@ -52,12 +52,19 @@ namespace CityCode.MandateSystem.Api.Endpoints
             })
             .WithDisplayName("Do name enquiry");
 
-             group.MapPost("/deactivate-mandate", async (ISender sender, [FromBody] DeactivateMandateCommand command) =>
-            {
-                var result = await sender.Send(command);
-                return result;
-            })
-            .WithDisplayName("Deactivate mandate");
+            group.MapPost("/deactivate-mandate", async (ISender sender, [FromBody] DeactivateMandateCommand command) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("Deactivate mandate");
+
+            group.MapPost("/liquidate-product", async (ISender sender, [FromBody] LiquidateProductCommand command) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("Liquidate Product");
 
             return group;
         }
