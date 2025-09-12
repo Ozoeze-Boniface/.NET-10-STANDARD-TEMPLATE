@@ -57,8 +57,9 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
 
             //INSERT INTO SCHEDULE TABLE
             var schedule = new MandateSchedule(mandate.MandateId, mandate.MandateReference, mandate.NibbsMandateCode!, mandate.WorkflowStatus!.Value, mandate.StartDate, mandate.EndDate, mandate.PaymentFrequency);
-            await _context.MandateSchedules.AddAsync(schedule);
+            
             await _context.Mandates.AddAsync(mandate);
+            await _context.MandateSchedules.AddAsync(schedule);
 
             await _context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<object>.Success(DateTime.UtcNow,
