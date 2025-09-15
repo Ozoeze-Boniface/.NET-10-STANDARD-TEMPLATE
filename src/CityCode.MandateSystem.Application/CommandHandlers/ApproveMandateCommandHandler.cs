@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Commands;
 using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
