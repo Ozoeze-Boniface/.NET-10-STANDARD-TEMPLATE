@@ -34,30 +34,41 @@ public class ScheduleUpdateWorker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var scope = _factory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-
-            var mandates = await context.MandateSchedules
-                .Where(s =>
-                    s.EndDate > DateOnly.FromDateTime(DateTime.Now) &&
-                    !s.IsEnded &&
-                    s.WorkflowStatus != WorkflowStatus.MANDATE_APPROVED_BY_BANK)
-                .ToListAsync(stoppingToken);
-
-            foreach (var mandate in mandates)
+            try
             {
-                var result = await _mandateService.GetMandateStatus(mandate.NibbsMandateCode);
+                using var scope = _factory.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
-                if (result.Data?.WorkflowStatus == "Mandate Approved by Bank")
+                _logger.LogInformation("SCHEDULE UPDATE WORKER RUNNING");
+                var mandates = await context.MandateSchedules
+                    .Where(s =>
+                        s.EndDate > DateOnly.FromDateTime(DateTime.Now) &&
+                        !s.IsEnded &&
+                        s.WorkflowStatus != WorkflowStatus.MANDATE_APPROVED_BY_BANK)
+                    .ToListAsync(stoppingToken);
+
+                foreach (var mandate in mandates)
                 {
-                    mandate.WorkflowStatus = WorkflowStatus.MANDATE_APPROVED_BY_BANK;
-                    mandate.DateOfBankApproval = DateTime.UtcNow;
+                    _logger.LogInformation("PROCESSING RECORD FOR {MandateMandateId}", mandate.MandateId);
+                    var result = await _mandateService.GetMandateStatus(mandate.NibbsMandateCode);
+
+                    if (result.Data?.WorkflowStatus == "Mandate Approved by Bank")
+                    {
+                        mandate.WorkflowStatus = WorkflowStatus.MANDATE_APPROVED_BY_BANK;
+                        mandate.DateOfBankApproval = DateTime.UtcNow;
+                    }
+                    _logger.LogInformation("DONE PROCESSING RECORD FOR {MandateMandateId}", mandate.MandateId);
                 }
+
+                await context.SaveChangesAsync(stoppingToken);
+
+                _logger.LogInformation("Worker completed cycle at: {Time}", DateTimeOffset.Now);
             }
-
-            await context.SaveChangesAsync(stoppingToken);
-
-            _logger.LogInformation("Worker completed cycle at: {Time}", DateTimeOffset.Now);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                _logger.LogError("Exception while scheduling mandate for transaction {error}", e.Message);
+            }
 
             await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
         }
