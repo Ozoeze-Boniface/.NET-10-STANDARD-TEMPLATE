@@ -30,14 +30,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          # --- MODIFIED LINE ---
-          # Tags the image with the unique run number (e.g., 1-dev, 2-dev, etc.)
           tags: |
-                ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:${{ github.run_number }}-dev
-                ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest
+            ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:${{ github.run_number }}-dev
+            ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest
+
+      - name: Build and push Worker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile-worker # Using the worker's Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:${{ github.run_number }}-dev
+            ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:dev-latest
