@@ -39,6 +39,10 @@ jobs:
           tags: |
             ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:${{ github.run_number }}-dev
             ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateapi:dev-latest
+          # --- CACHE FIX FOR API ---
+          # Use a unique cache for the API
+          cache-from: type=gha,scope=${{ github.workflow }}-api
+          cache-to: type=gha,scope=${{ github.workflow }}-api,mode=max
 
       - name: Build and push Worker image
         uses: docker/build-push-action@v5
@@ -49,3 +53,7 @@ jobs:
           tags: |
             ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:${{ github.run_number }}-dev
             ghcr.io/${{ steps.string.outputs.owner_lc }}/mandateworker:dev-latest
+          # --- CACHE FIX FOR WORKER ---
+          # Use a unique cache for the Worker
+          cache-from: type=gha,scope=${{ github.workflow }}-worker
+          cache-to: type=gha,scope=${{ github.workflow }}-worker,mode=max
