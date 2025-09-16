@@ -8,6 +8,7 @@ using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
 using Npgsql;
 
 namespace CityCode.MandateSystem.WorkerService
@@ -37,43 +38,52 @@ namespace CityCode.MandateSystem.WorkerService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                using var scope = _factory.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-
-                var today = DateOnly.FromDateTime(DateTime.Now);
-
-                var schedules = await context.MandateSchedules.Include(p => p.Mandate)
-                    .Where(s => s.NextRunDate == today && !s.IsEnded && s.WorkflowStatus == WorkflowStatus.MANDATE_APPROVED_BY_BANK)
-                    .Where(s => !context.MandateTransactions
-                        .Any(t => t.MandateId == s.MandateId && t.TransactionDate == today))
-                    .ToListAsync(stoppingToken);
-
-                var mandates = schedules
-                    .Select(s => s.Mandate)
-                    .ToList();
-
-                foreach (var mandateSchedule in schedules)
+                try
                 {
-                    var result = await _mandateService.DoFundsTransfer(mandateSchedule.Mandate);
+                    using var scope = _factory.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                    _logger.LogInformation("TRANSACTION POSTING WORKER RUNNING");
 
-                    var transaction = new MandateTransaction(
-                        mandateScheduleId: mandateSchedule.MandateScheduleId,
-                        transactionReference: result.PaymentReference ?? string.Empty,
-                        amount: result.Amount,
-                        currency: "NGN",
-                        transactionDate: today,
-                        transactionStatus: result.ResponseCode == "00" ? TransactionStatus.SUCCESSFUL.ToString() : TransactionStatus.FAILED.ToString());
-                    transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode, result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName, result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel, result.BeneficiaryBankVerificationNumber,
-                         result.OriginatorAccountName, result.OriginatorAccountNumber, result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel, result.TransactionLocation, result.Narration, result.PaymentReference!);
-                    transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
+                    var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    context.MandateTransactions.Add(transaction);
-                    await context.SaveChangesAsync(stoppingToken);
+                    var schedules = await context.MandateSchedules.Include(p => p.Mandate)
+                        .Where(s => s.NextRunDate == today && !s.IsEnded && s.WorkflowStatus == WorkflowStatus.MANDATE_APPROVED_BY_BANK)
+                        .Where(s => !context.MandateTransactions
+                            .Any(t => t.MandateId == s.MandateId && t.TransactionDate == today))
+                        .ToListAsync(stoppingToken);
+
+                    foreach (var mandateSchedule in schedules)
+                    {
+                        _logger.LogInformation("POSTING TRANSACTION FOR {MandateMandateId}", mandateSchedule.MandateId);
+
+                        var result = await _mandateService.DoFundsTransfer(mandateSchedule.Mandate);
+
+                        _logger.LogInformation("POSTING TRANSACTION RESPONSE FOR {MandateMandateId}: {response}", mandateSchedule.MandateId, JsonConvert.SerializeObject(result));
+
+                        var transaction = new MandateTransaction(
+                            mandateScheduleId: mandateSchedule.MandateScheduleId,
+                            transactionReference: result.PaymentReference ?? string.Empty,
+                            amount: result.Amount,
+                            currency: "NGN",
+                            transactionDate: today,
+                            transactionStatus: result.ResponseCode == "00" ? TransactionStatus.SUCCESSFUL.ToString() : TransactionStatus.FAILED.ToString());
+                        transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode, result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName, result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel, result.BeneficiaryBankVerificationNumber,
+                             result.OriginatorAccountName, result.OriginatorAccountNumber, result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel, result.TransactionLocation, result.Narration, result.PaymentReference!);
+                        transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
+
+                        context.MandateTransactions.Add(transaction);
+                        await context.SaveChangesAsync(stoppingToken);
+
+                        _logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}", mandateSchedule.MandateId);
+                    }
+
+                    _logger.LogInformation("Worker completed cycle at: {Time}", DateTimeOffset.Now);
                 }
-
-                await context.SaveChangesAsync(stoppingToken);
-
-                _logger.LogInformation("Worker completed cycle at: {Time}", DateTimeOffset.Now);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    _logger.LogError("Exception while posting transaction {error}", e.Message);
+                }
 
                 await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
             }
