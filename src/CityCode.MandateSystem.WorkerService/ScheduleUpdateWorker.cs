@@ -70,7 +70,7 @@ public class ScheduleUpdateWorker : BackgroundService
                 _logger.LogError("Exception while scheduling mandate for transaction {error}", e.Message);
             }
 
-            await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
+            await Task.Delay(TimeSpan.FromHours(5), stoppingToken);
         }
     }
 }
