@@ -29,6 +29,7 @@ public class MandateService : IMandateService
             {"Authorization", $"Bearer {token}"}
         };
         var payload = mandate.CreateMandatePayload();
+        
         var createMandateResponse = await _genericServices.ConsumeRestAPIText(_nibssSettings.CreateMandateUrl, payload, headers);
 
         var mandateResponse = JsonConvert.DeserializeObject<MandateCreationResponse>(createMandateResponse);
