@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common;
+using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Application.Settings;
@@ -29,6 +30,16 @@ namespace CityCode.MandateSystem.Application.Commands
         {
             request.TransactionId = Helpers.GenerateTransactionId(_bankCode);
             var result = await _mandateService.DoNameEnquiry(request);
+
+            if(result.ResponseCode != "00")
+            {
+                var reason = result.ResponseCode switch
+                {
+                    "16" => "Invalid bank code",
+                    _ => "Name Enquiry Failed"
+                };
+                throw new BadRequestException("Name Enquiry Failed: " + reason);
+            }
 
             return Common.Models.View.Result<NameEnquiryResponse>.Success(DateTime.UtcNow, result);
         }
