@@ -85,7 +85,7 @@ namespace CityCode.MandateSystem.WorkerService
                     _logger.LogError("Exception while posting transaction {error}", e.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromHours(4), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(4), stoppingToken);
             }
         }
     }
