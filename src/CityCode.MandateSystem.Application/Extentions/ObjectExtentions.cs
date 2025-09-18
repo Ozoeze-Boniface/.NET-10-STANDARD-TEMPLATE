@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Domain.Enums;
