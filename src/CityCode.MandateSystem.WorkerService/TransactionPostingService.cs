@@ -38,12 +38,18 @@ namespace CityCode.MandateSystem.WorkerService
 
                     var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    var schedules = await context.MandateSchedules.Include(p => p.Mandate)
-                        .Where(s => s.NextRunDate == today && !s.IsEnded &&
-                                    s.WorkflowStatus == WorkflowStatus.MANDATE_APPROVED_BY_BANK)
-                        .Where(s => !context.MandateTransactions
-                            .Any(t => t.MandateId == s.MandateId && t.TransactionDate == today))
+                    var schedules = await context.MandateSchedules
+                        .Include(s => s.Mandate)
+                        .Include(s => s.MandateTransactions)
+                        .Where(s =>
+                            s.NextRunDate == today &&
+                            !s.IsEnded &&
+                            s.WorkflowStatus == WorkflowStatus.MANDATE_APPROVED_BY_BANK &&
+                            !s.MandateTransactions.Any(t =>
+                                t.MandateScheduleId == s.MandateScheduleId &&
+                                t.TransactionDate == today))
                         .ToListAsync(stoppingToken);
+
 
                     foreach (var mandateSchedule in schedules)
                     {
@@ -146,14 +152,18 @@ namespace CityCode.MandateSystem.WorkerService
                 currency: "NGN",
                 transactionDate: DateOnly.FromDateTime(DateTime.UtcNow),
                 transactionStatus: nameof(TransactionStatus.FAILED));
-            transaction.UpdateFromResponse(String.Empty, string.Empty, int.Parse(manadatetransactionPayload.ChannelCode!),
-                manadatetransactionPayload.NameEnquiryRef!, manadatetransactionPayload.DestinationInstitutionCode!, manadatetransactionPayload.BeneficiaryAccountName!,
+            transaction.UpdateFromResponse(String.Empty, string.Empty,
+                int.Parse(manadatetransactionPayload.ChannelCode!),
+                manadatetransactionPayload.NameEnquiryRef!, manadatetransactionPayload.DestinationInstitutionCode!,
+                manadatetransactionPayload.BeneficiaryAccountName!,
                 manadatetransactionPayload.BeneficiaryAccountNumber!, manadatetransactionPayload.BeneficiaryKYCLevel!,
                 manadatetransactionPayload.BeneficiaryBankVerificationNumber!,
                 manadatetransactionPayload.OriginatorAccountName!, manadatetransactionPayload.OriginatorAccountNumber!,
-                manadatetransactionPayload.OriginatorBankVerificationNumber!, manadatetransactionPayload.OriginatorKYCLevel!, manadatetransactionPayload.TransactionLocation!,
+                manadatetransactionPayload.OriginatorBankVerificationNumber!,
+                manadatetransactionPayload.OriginatorKYCLevel!, manadatetransactionPayload.TransactionLocation!,
                 String.Empty, manadatetransactionPayload.PaymentReference!);
-            transaction.UpdateStatus(transaction.TransactionStatus, nibbsFailureMessage, manadatetransactionPayload.TransactionId);
+            transaction.UpdateStatus(transaction.TransactionStatus, nibbsFailureMessage,
+                manadatetransactionPayload.TransactionId);
 
             _context.MandateTransactions.Add(transaction);
             await _context.SaveChangesAsync(CancellationToken.None);

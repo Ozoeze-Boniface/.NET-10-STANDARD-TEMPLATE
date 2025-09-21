@@ -16,6 +16,7 @@ public class MandateSchedule : BaseAuditableEntity
     public bool IsEnded { get; set; } = false;
     public DateTime? DateOfBankApproval { get; set; }
     public Mandate Mandate { get; set; } = default!;
+    public ICollection<MandateTransaction> MandateTransactions { get; set; } = [];
 
     public MandateSchedule(long mandateId, string mandateReference, string nibbsMandateCode, WorkflowStatus workflowStatus, DateOnly startDate, DateOnly endDate, PaymentFrequency paymentFrequency)
     {
