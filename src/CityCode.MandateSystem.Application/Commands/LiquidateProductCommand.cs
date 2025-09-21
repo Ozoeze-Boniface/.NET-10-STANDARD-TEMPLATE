@@ -42,7 +42,7 @@ namespace CityCode.MandateSystem.Application.Commands
             {
                 amount = request.Amount;
             }
-            var result = await _mandateService.DoFundsTransfer(mandate, amount);
+            var result = await _mandateService.DoFundsTransfer(mandate, amount: amount);
 
             return Common.Models.View.Result<MandateTransactionResponse>.Success(DateTime.Now, result);
         }

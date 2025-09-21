@@ -5,6 +5,9 @@ using CityCode.MandateSystem.Application.Extentions;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Application.Settings;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using static CityCode.MandateSystem.Application.Extentions.ObjectExtentions;
 
 public class MandateService : IMandateService
 {
@@ -68,11 +71,18 @@ public class MandateService : IMandateService
         return mandateResponse ?? throw new BadRequestException("Failed to get mandate status. Please try again later or contact support.");
     }
 
-    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, decimal? amount = null)
+    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, MandateTransactionPayload? transactionPayload = null, decimal? amount = null)
     {
         var token = await _genericServices.LogINToNibbsFundsTransfer();
-        var payload = mandate.BuildMandateTransactionPayload(bankcode: _bankCode, amount);
-        var jsonPayload = JsonConvert.SerializeObject(payload);
+        var payload = transactionPayload ?? mandate.BuildMandateTransactionPayload(bankcode: _bankCode, amount);
+        var jsonPayload = JsonConvert.SerializeObject(payload, new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented
+        });
         var headers = new Dictionary<string, string>()
         {
             {"Accept", "application/json"},

@@ -29,40 +29,43 @@ namespace CityCode.MandateSystem.Application.Extentions
             };
 
             return JsonConvert.SerializeObject(payload);
-
         }
 
-        public static object BuildMandateTransactionPayload(this Mandate mandate, string bankcode, decimal? amount = null)
+        public static MandateTransactionPayload BuildMandateTransactionPayload(
+            this Mandate mandate, string bankcode, decimal? amount = null)
         {
-            var transactionAmount = amount is null ? mandate.TransactionAmount.ToString("F2") : amount.ToString();
-            return new
+            var transactionAmount = amount is null
+                ? mandate.TransactionAmount.ToString("F2")
+                : amount.Value.ToString("F2");
+
+            return new MandateTransactionPayload
             {
-                amount = transactionAmount,
-                beneficiaryAccountName = mandate.BanksAccountName,
-                beneficiaryAccountNumber = mandate.BanksAccountNumber,
-                beneficiaryBankVerificationNumber = mandate.BanksBvn,
-                beneficiaryKYCLevel = "1", // you can map from another property if available
-                channelCode = "1", // static or map if you store it
-                originatorAccountName = mandate.PayerName,
-                originatorAccountNumber = mandate.PayerAccountNumber,
-                originatorKYCLevel = "1", // static or mapped
-                mandateReferenceNumber = mandate.MandateReference,
-                paymentReference = $"{mandate.MandateReference}/{mandate.BillerId}/{mandate.ProductId}/{mandate.MandateId}",
-                transactionLocation = mandate.Location,
-                originatorNarration = mandate.Narration,
-                beneficiaryNarration = mandate.Narration,
-                billerId = mandate.BillerId.ToString(),
-                destinationInstitutionCode = mandate.DestinationInstitutionCode,
-                sourceInstitutionCode = mandate.SourceInstitutionCode,
-                transactionId = Helpers.GenerateTransactionId(bankcode),
-                originatorBankVerificationNumber = mandate.PayerBvn,
-                nameEnquiryRef = Helpers.GenerateTransactionId(bankcode),
+                Amount = transactionAmount,
+                BeneficiaryAccountName = mandate.BanksAccountName,
+                BeneficiaryAccountNumber = mandate.BanksAccountNumber,
+                BeneficiaryBankVerificationNumber = mandate.BanksBvn,
+                BeneficiaryKYCLevel = "1",
+                ChannelCode = "1",
+                OriginatorAccountName = mandate.PayerName,
+                OriginatorAccountNumber = mandate.PayerAccountNumber,
+                OriginatorKYCLevel = "1",
+                MandateReferenceNumber = mandate.MandateReference,
+                PaymentReference =
+                    $"{mandate.MandateReference}/{mandate.BillerId}/{mandate.ProductId}/{mandate.MandateId}",
+                TransactionLocation = mandate.Location,
+                OriginatorNarration = mandate.Narration,
+                BeneficiaryNarration = mandate.Narration,
+                BillerId = mandate.BillerId.ToString(),
+                DestinationInstitutionCode = mandate.DestinationInstitutionCode,
+                SourceInstitutionCode = mandate.SourceInstitutionCode,
+                TransactionId = Helpers.GenerateTransactionId(bankcode),
+                OriginatorBankVerificationNumber = mandate.PayerBvn,
+                NameEnquiryRef = Helpers.GenerateTransactionId(bankcode),
                 InitiatorAccountName = mandate.AccountName,
                 InitiatorAccountNumber = mandate.PayerAccountNumber
             };
-
-
         }
+
 
         public static int GetDaysFromFrequency(this PaymentFrequency paymentFrequency)
         {
@@ -89,6 +92,32 @@ namespace CityCode.MandateSystem.Application.Extentions
             };
 
             return JsonConvert.SerializeObject(payload);
+        }
+
+        public class MandateTransactionPayload
+        {
+            public string? Amount { get; set; }
+            public string? BeneficiaryAccountName { get; set; }
+            public string? BeneficiaryAccountNumber { get; set; }
+            public string? BeneficiaryBankVerificationNumber { get; set; }
+            public string? BeneficiaryKYCLevel { get; set; }
+            public string? ChannelCode { get; set; }
+            public string? OriginatorAccountName { get; set; }
+            public string? OriginatorAccountNumber { get; set; }
+            public string? OriginatorKYCLevel { get; set; }
+            public string? MandateReferenceNumber { get; set; }
+            public string? PaymentReference { get; set; }
+            public string? TransactionLocation { get; set; }
+            public string? OriginatorNarration { get; set; }
+            public string? BeneficiaryNarration { get; set; }
+            public string? BillerId { get; set; }
+            public string? DestinationInstitutionCode { get; set; }
+            public string? SourceInstitutionCode { get; set; }
+            public string? TransactionId { get; set; }
+            public string? OriginatorBankVerificationNumber { get; set; }
+            public string? NameEnquiryRef { get; set; }
+            public string? InitiatorAccountName { get; set; }
+            public string? InitiatorAccountNumber { get; set; }
         }
     }
 }
