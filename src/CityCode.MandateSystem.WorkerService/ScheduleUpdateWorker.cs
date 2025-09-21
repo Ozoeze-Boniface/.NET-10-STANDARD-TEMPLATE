@@ -1,9 +1,7 @@
 using System.Data;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common.Interfaces;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Domain.Enums;
-using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
