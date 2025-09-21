@@ -50,7 +50,8 @@ namespace CityCode.MandateSystem.Domain.Entities
             decimal amount,
             string currency,
             DateOnly transactionDate,
-            string transactionStatus)
+            string transactionStatus,
+            long mandateId = 0)
         {
             MandateScheduleId = mandateScheduleId;
             TransactionReference = transactionReference;
@@ -58,6 +59,7 @@ namespace CityCode.MandateSystem.Domain.Entities
             Currency = currency;
             TransactionDate = transactionDate;
             TransactionStatus = transactionStatus;
+            MandateId = mandateId;
         }
 
         /// <summary>
