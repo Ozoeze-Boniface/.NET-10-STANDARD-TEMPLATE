@@ -68,7 +68,7 @@ namespace CityCode.MandateSystem.WorkerService
                             transactionDate: today,
                             transactionStatus: result.ResponseCode == "00"
                                 ? nameof(TransactionStatus.SUCCESSFUL)
-                                : nameof(TransactionStatus.FAILED));
+                                : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
                         transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode,
                             result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName,
                             result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
@@ -151,7 +151,7 @@ namespace CityCode.MandateSystem.WorkerService
                 amount: 0m,
                 currency: "NGN",
                 transactionDate: DateOnly.FromDateTime(DateTime.UtcNow),
-                transactionStatus: nameof(TransactionStatus.FAILED));
+                transactionStatus: nameof(TransactionStatus.FAILED), mandate.MandateId);
             transaction.UpdateFromResponse(String.Empty, string.Empty,
                 int.Parse(manadatetransactionPayload.ChannelCode!),
                 manadatetransactionPayload.NameEnquiryRef!, manadatetransactionPayload.DestinationInstitutionCode!,
