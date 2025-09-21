@@ -78,6 +78,7 @@ namespace CityCode.MandateSystem.WorkerService
                             result.TransactionLocation, result.Narration, result.PaymentReference!);
                         transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
 
+                        mandateSchedule.UpdateToNextRunDate();
                         context.MandateTransactions.Add(transaction);
                         await context.SaveChangesAsync(stoppingToken);
 
@@ -165,6 +166,7 @@ namespace CityCode.MandateSystem.WorkerService
             transaction.UpdateStatus(transaction.TransactionStatus, nibbsFailureMessage,
                 manadatetransactionPayload.TransactionId);
 
+            mandateSchedule.UpdateToNextRunDate();
             _context.MandateTransactions.Add(transaction);
             await _context.SaveChangesAsync(CancellationToken.None);
 
