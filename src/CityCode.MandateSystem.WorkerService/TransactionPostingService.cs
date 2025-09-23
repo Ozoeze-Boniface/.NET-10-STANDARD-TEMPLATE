@@ -155,7 +155,7 @@ namespace CityCode.MandateSystem.WorkerService
             const int fundsTransferMaxAttempts = 3;
             const int fundsTransferDelayMs = 2000; // 2 seconds
             var mandate = mandateSchedule.Mandate;
-            ObjectExtentions.MandateTransactionPayload manadatetransactionPayload = null!;
+            ObjectExtentions.MandateTransactionPayload mandatetransactionPayload = null!;
 
             Exception? lastException = null;
             string nibbsFailureMessage = string.Empty;
@@ -167,13 +167,13 @@ namespace CityCode.MandateSystem.WorkerService
                     logger.LogInformation("Funds transfer attempt {Attempt}/{MaxAttempts} for mandate {MandateId}",
                         attempt, fundsTransferMaxAttempts, mandate.MandateId);
 
-                    manadatetransactionPayload = mandate.BuildMandateTransactionPayload(_systemSettings.BankCode);
+                    mandatetransactionPayload = mandate.BuildMandateTransactionPayload(_systemSettings.BankCode);
                     if (amountOverride is > 0)
                     {
-                        manadatetransactionPayload.Amount = amountOverride.Value.ToString(CultureInfo.InvariantCulture);
+                        mandatetransactionPayload.Amount = amountOverride.Value.ToString(CultureInfo.InvariantCulture);
                     }
 
-                    var result = await mandateService.DoFundsTransfer(mandate, manadatetransactionPayload);
+                    var result = await mandateService.DoFundsTransfer(mandate, mandatetransactionPayload);
 
                     logger.LogInformation("Funds transfer successful on attempt {Attempt} for mandate {MandateId}",
                         attempt, mandate.MandateId);
@@ -206,24 +206,29 @@ namespace CityCode.MandateSystem.WorkerService
             var transaction = new MandateTransaction(
                 mandateScheduleId: mandateSchedule.MandateScheduleId,
                 transactionReference: string.Empty,
-                amount: 0m,
+                amount: decimal.Parse(mandatetransactionPayload.Amount!),
                 currency: "NGN",
                 transactionDate: DateOnly.FromDateTime(DateTime.UtcNow),
                 transactionStatus: nameof(TransactionStatus.FAILED), mandate.MandateId);
             transaction.UpdateFromResponse(String.Empty, string.Empty,
-                int.Parse(manadatetransactionPayload.ChannelCode!),
-                manadatetransactionPayload.NameEnquiryRef!, manadatetransactionPayload.DestinationInstitutionCode!,
-                manadatetransactionPayload.BeneficiaryAccountName!,
-                manadatetransactionPayload.BeneficiaryAccountNumber!, manadatetransactionPayload.BeneficiaryKYCLevel!,
-                manadatetransactionPayload.BeneficiaryBankVerificationNumber!,
-                manadatetransactionPayload.OriginatorAccountName!, manadatetransactionPayload.OriginatorAccountNumber!,
-                manadatetransactionPayload.OriginatorBankVerificationNumber!,
-                manadatetransactionPayload.OriginatorKYCLevel!, manadatetransactionPayload.TransactionLocation!,
-                String.Empty, manadatetransactionPayload.PaymentReference!);
+                int.Parse(mandatetransactionPayload.ChannelCode!),
+                mandatetransactionPayload.NameEnquiryRef!, mandatetransactionPayload.DestinationInstitutionCode!,
+                mandatetransactionPayload.BeneficiaryAccountName!,
+                mandatetransactionPayload.BeneficiaryAccountNumber!, mandatetransactionPayload.BeneficiaryKYCLevel!,
+                mandatetransactionPayload.BeneficiaryBankVerificationNumber!,
+                mandatetransactionPayload.OriginatorAccountName!, mandatetransactionPayload.OriginatorAccountNumber!,
+                mandatetransactionPayload.OriginatorBankVerificationNumber!,
+                mandatetransactionPayload.OriginatorKYCLevel!, mandatetransactionPayload.TransactionLocation!,
+                String.Empty, mandatetransactionPayload.PaymentReference!);
             transaction.UpdateStatus(transaction.TransactionStatus, nibbsFailureMessage,
-                manadatetransactionPayload.TransactionId);
+                mandatetransactionPayload.TransactionId);
 
             mandateSchedule.UpdateToNextRunDate();
+
+            var retryTransaction = new RetryTransaction(mandate.MandateId, false, string.Empty,
+                nibbsFailureMessage, DateTime.UtcNow, decimal.Parse(mandatetransactionPayload.Amount!), mandateSchedule.NextRunDate, 1);
+
+            _context.RetryTransactions.Add(retryTransaction);
             _context.MandateTransactions.Add(transaction);
             await _context.SaveChangesAsync(CancellationToken.None);
 

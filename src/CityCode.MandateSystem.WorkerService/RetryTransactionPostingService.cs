@@ -36,7 +36,7 @@ public class RetryTransactionPostingService(
 
                     var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    var transactionRetries = await context.RetryTransactions.Where(t => !t.IsPosted && t.NextRunDate >= today)
+                    var transactionRetries = await context.RetryTransactions.Where(t => !t.IsPosted)
                         .ToListAsync(stoppingToken);    
 
 
@@ -69,6 +69,12 @@ public class RetryTransactionPostingService(
                             result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
                             result.TransactionLocation, result.Narration, result.PaymentReference!);
                         transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
+
+                        // Update retry transaction as posted
+                        retry.IsPosted = true;
+                        retry.ResponseCode = result.ResponseCode;
+                        retry.ResponseDescription = result.Narration;
+                        retry.TransactionDate = DateTime.UtcNow;
 
                         mandateSchedule.UpdateToNextRunDate();
                         context.MandateTransactions.Add(transaction);
@@ -158,7 +164,6 @@ public class RetryTransactionPostingService(
             transaction.UpdateStatus(transaction.TransactionStatus, nibbsFailureMessage,
                 manadatetransactionPayload.TransactionId);
 
-            mandateSchedule.UpdateToNextRunDate();
             _context.MandateTransactions.Add(transaction);
             await _context.SaveChangesAsync(CancellationToken.None);
 
