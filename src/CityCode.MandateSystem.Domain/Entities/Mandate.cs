@@ -37,6 +37,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public DateOnly EndDate { get; set; }
         public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
+        public bool TakeCharge { get; set; }
 
         public void UpdateMandateStatus(MandateStatus status)
         {

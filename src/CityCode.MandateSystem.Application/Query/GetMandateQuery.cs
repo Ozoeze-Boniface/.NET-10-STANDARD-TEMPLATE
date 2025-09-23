@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common.Models;
-using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Domain.Enums;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace CityCode.MandateSystem.Application.Query
 {

@@ -34,6 +34,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public DateOnly EndDate { get; set; }
         public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
+        public bool TakeCharge { get; set; } = false;
     }
 
     public class CreateMandateCommandValidator : AbstractValidator<CreateMandateCommand>

@@ -1,4 +1,5 @@
 using System.Data;
+using System.Globalization;
 using CityCode.MandateSystem.Application.Common.Interfaces;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Extentions;
@@ -60,30 +61,80 @@ namespace CityCode.MandateSystem.WorkerService
                         logger.LogInformation("POSTING TRANSACTION RESPONSE FOR {MandateMandateId}: {response}",
                             mandateSchedule.MandateId, JsonConvert.SerializeObject(result));
 
-                        var transaction = new MandateTransaction(
-                            mandateScheduleId: mandateSchedule.MandateScheduleId,
-                            transactionReference: result.PaymentReference ?? string.Empty,
-                            amount: result.Amount,
-                            currency: "NGN",
-                            transactionDate: today,
-                            transactionStatus: result.ResponseCode == "00"
-                                ? nameof(TransactionStatus.SUCCESSFUL)
-                                : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
-                        transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode,
-                            result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName,
-                            result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
-                            result.BeneficiaryBankVerificationNumber,
-                            result.OriginatorAccountName, result.OriginatorAccountNumber,
-                            result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
-                            result.TransactionLocation, result.Narration, result.PaymentReference!);
-                        transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
+                        if (result.ResponseCode == "00")
+                        {
+                            var transaction = new MandateTransaction(
+                                mandateScheduleId: mandateSchedule.MandateScheduleId,
+                                transactionReference: result.PaymentReference ?? string.Empty,
+                                amount: result.Amount,
+                                currency: "NGN",
+                                transactionDate: today,
+                                transactionStatus: result.ResponseCode == "00"
+                                    ? nameof(TransactionStatus.SUCCESSFUL)
+                                    : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
+                            transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode,
+                                result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName,
+                                result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
+                                result.BeneficiaryBankVerificationNumber,
+                                result.OriginatorAccountName, result.OriginatorAccountNumber,
+                                result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
+                                result.TransactionLocation, result.Narration, result.PaymentReference!);
+                            transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
 
-                        mandateSchedule.UpdateToNextRunDate();
-                        context.MandateTransactions.Add(transaction);
-                        await context.SaveChangesAsync(stoppingToken);
+                            if (mandateSchedule.Mandate.TakeCharge)
+                            {
+                                var resultForCharge = await ExecuteFundsTransferWithRetry(mandateSchedule, GetOnePercent(mandateSchedule.Mandate.TransactionAmount));
 
-                        logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}",
-                            mandateSchedule.MandateId);
+                                logger.LogInformation(
+                                    "POSTING CHARGE TRANSACTION RESPONSE FOR {MandateMandateId}: {response}",
+                                    mandateSchedule.MandateId, JsonConvert.SerializeObject(resultForCharge));
+
+                                if (resultForCharge.ResponseCode == "00")
+                                {
+                                    var chargeTransaction = new MandateTransaction(
+                                        mandateScheduleId: mandateSchedule.MandateScheduleId,
+                                        transactionReference: result.PaymentReference ?? string.Empty,
+                                        amount: result.Amount,
+                                        currency: "NGN",
+                                        transactionDate: today,
+                                        transactionStatus: result.ResponseCode == "00"
+                                            ? nameof(TransactionStatus.SUCCESSFUL)
+                                            : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
+                                    transaction.UpdateFromResponse(result.ResponseCode, result.SessionID,
+                                        result.ChannelCode,
+                                        result.NameEnquiryRef, result.DestinationInstitutionCode,
+                                        result.BeneficiaryAccountName,
+                                        result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
+                                        result.BeneficiaryBankVerificationNumber,
+                                        result.OriginatorAccountName, result.OriginatorAccountNumber,
+                                        result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
+                                        result.TransactionLocation, result.Narration, result.PaymentReference!);
+                                    transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL",
+                                        result.TransactionId);
+
+                                    context.MandateTransactions.Add(chargeTransaction);
+                                }
+                                else
+                                {
+                                    logger.LogError(
+                                        "Charge Transaction failed for {MandateMandateId} with response code {ResponseCode}",
+                                        mandateSchedule.MandateId, resultForCharge.ResponseCode);
+                                }
+                            }
+
+                            mandateSchedule.UpdateToNextRunDate();
+                            context.MandateTransactions.Add(transaction);
+                            await context.SaveChangesAsync(stoppingToken);
+
+                            logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}",
+                                mandateSchedule.MandateId);
+                        }
+                        else
+                        {
+                            logger.LogError(
+                                "Transaction failed for {MandateMandateId} with response code {ResponseCode}",
+                                mandateSchedule.MandateId, result.ResponseCode);
+                        }
                     }
 
                     logger.LogInformation("Worker completed cycle at: {Time}", DateTimeOffset.Now);
@@ -98,7 +149,8 @@ namespace CityCode.MandateSystem.WorkerService
             }
         }
 
-        private async Task<MandateTransactionResponse> ExecuteFundsTransferWithRetry(MandateSchedule mandateSchedule)
+        private async Task<MandateTransactionResponse> ExecuteFundsTransferWithRetry(MandateSchedule mandateSchedule,
+            decimal? amountOverride = 0)
         {
             const int fundsTransferMaxAttempts = 3;
             const int fundsTransferDelayMs = 2000; // 2 seconds
@@ -116,6 +168,11 @@ namespace CityCode.MandateSystem.WorkerService
                         attempt, fundsTransferMaxAttempts, mandate.MandateId);
 
                     manadatetransactionPayload = mandate.BuildMandateTransactionPayload(_systemSettings.BankCode);
+                    if (amountOverride is > 0)
+                    {
+                        manadatetransactionPayload.Amount = amountOverride.Value.ToString(CultureInfo.InvariantCulture);
+                    }
+
                     var result = await mandateService.DoFundsTransfer(mandate, manadatetransactionPayload);
 
                     logger.LogInformation("Funds transfer successful on attempt {Attempt} for mandate {MandateId}",
@@ -174,6 +231,12 @@ namespace CityCode.MandateSystem.WorkerService
             throw new InvalidOperationException(
                 $"Funds transfer failed after {fundsTransferMaxAttempts} attempts for mandate {mandate.MandateId}: {lastException?.Message}",
                 lastException);
+        }
+
+        private decimal GetOnePercent(decimal amount)
+        {
+            decimal onePercent = amount * 0.01m;
+            return onePercent > 1000 ? 1000 : onePercent;
         }
     }
 }

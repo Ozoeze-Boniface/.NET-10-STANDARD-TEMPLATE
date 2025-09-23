@@ -122,7 +122,7 @@ namespace CityCode.MandateSystem.Application.Extentions
                 query = query.Where(x => x.WorkflowStatus == request.WorkflowStatus);
 
             if (request.MandateStatus is not null)
-                query = query.Where(x => x.MandateStatus == request.MandateStatus);
+                query = query.Where(x => x.MandateStatus.Equals(request.MandateStatus));
 
             if (request.ProgressStatus is not null)
                 query = query.Where(x => x.ProgressStatus == request.ProgressStatus);
