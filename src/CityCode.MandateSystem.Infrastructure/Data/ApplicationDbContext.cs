@@ -23,7 +23,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MandateSchedule> MandateSchedules => this.Set<MandateSchedule>();
     public DbSet<Bank> Banks => this.Set<Bank>();
     public DbSet<MandateTransaction> MandateTransactions => this.Set<MandateTransaction>();
-
+    public DbSet<RetryTransaction> RetryTransactions => this.Set<RetryTransaction>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
