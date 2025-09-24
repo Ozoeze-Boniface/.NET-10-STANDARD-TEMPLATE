@@ -10,8 +10,8 @@ namespace CityCode.MandateSystem.Application.Query
         public string? TransactionStatus { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
-        public int PageSize { get; set; }
-        public int PageNumber { get; set; }
+        public int? PageSize { get; set; }
+        public int? PageNumber { get; set; }
     }
 
     public class GetTransactionsQueryHandler(IApplicationDbContext context)
@@ -20,9 +20,11 @@ namespace CityCode.MandateSystem.Application.Query
         public async Task<Common.Models.View.Result<PaginatedList<MandateTransaction>>> Handle(GetTransactionsQuery request,
             CancellationToken cancellationToken)
         {
+            request.PageSize ??= 200;
+            request.PageNumber ??= 1;
             var query = context.MandateTransactions.AsQueryable().ApplyTransactionFilter(request);
 
-            var result = await query.PaginatedListAsync(request.PageNumber, request.PageSize);
+            var result = await query.PaginatedListAsync(request.PageNumber.Value, request.PageSize.Value);
 
             return Common.Models.View.Result<PaginatedList<MandateTransaction>>.Success(DateTime.Now, result);
 
