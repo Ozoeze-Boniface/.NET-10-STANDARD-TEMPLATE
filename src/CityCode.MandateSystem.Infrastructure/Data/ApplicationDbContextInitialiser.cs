@@ -36,7 +36,9 @@ public class ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitial
     {
         try
         {
+            _logger.LogInformation("Applying database migrations....");
             await this._context.Database.MigrateAsync();
+            _logger.LogInformation("Database migration applied successfully.");
         }
         catch (Exception ex)
         {
