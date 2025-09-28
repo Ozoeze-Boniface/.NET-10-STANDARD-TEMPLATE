@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CityCode.MandateSystem.Application.Common.Exceptions;
-using CityCode.MandateSystem.Application.Common.Models.View;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Domain.DomainDto;
-using CityCode.MandateSystem.Domain.Enums;
 using CityCode.MandateSystem.Domain.Events.ActivityLog;
 
 namespace CityCode.MandateSystem.Application.Commands
