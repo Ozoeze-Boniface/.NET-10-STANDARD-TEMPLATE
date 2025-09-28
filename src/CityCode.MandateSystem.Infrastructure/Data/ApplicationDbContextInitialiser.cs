@@ -21,7 +21,7 @@ public static class InitialiserExtensions
 
         await initialiser.InitialiseAsync();
 
-        await initialiser.SeedAsync();
+        // await initialiser.SeedAsync();
     }
 }
 
