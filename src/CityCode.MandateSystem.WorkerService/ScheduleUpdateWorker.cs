@@ -50,7 +50,7 @@ public class ScheduleUpdateWorker : BackgroundService
                     _logger.LogInformation("PROCESSING RECORD FOR {MandateMandateId}", mandate.MandateId);
                     var result = await _mandateService.GetMandateStatus(mandate.NibbsMandateCode);
 
-                    if (result.Data?.WorkflowStatus == "Mandate Approved by Bank")
+                    if (result.Data?.WorkflowStatus == "Bank Approved")
                     {
                         mandate.WorkflowStatus = WorkflowStatus.MANDATE_APPROVED_BY_BANK;
                         mandate.DateOfBankApproval = DateTime.UtcNow;
