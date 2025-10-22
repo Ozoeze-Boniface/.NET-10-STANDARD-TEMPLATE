@@ -49,9 +49,9 @@ namespace CityCode.MandateSystem.Application.Extentions
                 OriginatorAccountName = mandate.PayerName,
                 OriginatorAccountNumber = mandate.PayerAccountNumber,
                 OriginatorKYCLevel = "1",
-                MandateReferenceNumber = mandate.MandateReference,
+                MandateReferenceNumber = mandate.NibbsMandateCode,
                 PaymentReference =
-                    $"{mandate.MandateReference}/{mandate.BillerId}/{mandate.ProductId}/{mandate.MandateId}",
+                    $"{mandate.NibbsMandateCode}/{mandate.BillerId}/{mandate.ProductId}/{mandate.MandateId}",
                 TransactionLocation = mandate.Location,
                 OriginatorNarration = mandate.Narration,
                 BeneficiaryNarration = mandate.Narration,
