@@ -53,6 +53,7 @@ public class ScheduleUpdateWorker : BackgroundService
                     if (result.Data?.WorkflowStatus == "Bank Approved")
                     {
                         mandate.WorkflowStatus = WorkflowStatus.MANDATE_APPROVED_BY_BANK;
+                        mandate.Mandate.WorkflowStatus = WorkflowStatus.MANDATE_APPROVED_BY_BANK;
                         mandate.DateOfBankApproval = DateTime.UtcNow;
                     }
                     _logger.LogInformation("DONE PROCESSING RECORD FOR {MandateMandateId}", mandate.MandateId);
