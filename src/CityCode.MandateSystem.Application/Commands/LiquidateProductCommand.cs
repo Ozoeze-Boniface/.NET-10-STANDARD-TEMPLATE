@@ -13,6 +13,7 @@ namespace CityCode.MandateSystem.Application.Commands
     {
         public long MandateId { get; set; }
         public decimal Amount { get; set; }
+        public bool IsCharge { get; set; }
         public LiquidationType? LiquidationType { get; set; }
     }
 
@@ -42,7 +43,7 @@ namespace CityCode.MandateSystem.Application.Commands
             {
                 amount = request.Amount;
             }
-            var result = await _mandateService.DoFundsTransfer(mandate, amount: amount);
+            var result = await _mandateService.DoFundsTransfer(mandate, amount: amount, isCharge: request.IsCharge);
 
             return Common.Models.View.Result<MandateTransactionResponse>.Success(DateTime.Now, result);
         }
