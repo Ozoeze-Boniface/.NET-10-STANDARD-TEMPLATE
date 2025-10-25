@@ -13,6 +13,7 @@ public class MandateService : IMandateService
 {
     private readonly IGenericServices _genericServices;
     private readonly NibssSettings _nibssSettings;
+    private readonly SystemSettings _systemSettings;
     private readonly string _bankCode = string.Empty;
 
     public MandateService(IGenericServices genericServices, IOptions<SystemSettings> options)
@@ -20,6 +21,7 @@ public class MandateService : IMandateService
         _genericServices = genericServices;
         _nibssSettings = options.Value.NibssSettings ?? throw new ArgumentNullException(nameof(options.Value.NibssSettings));
         _bankCode = options.Value.BankCode;
+        _systemSettings = options.Value;
     }
 
     public async Task<MandateCreationResponse> CreateMandateAsync(Mandate mandate)
@@ -71,10 +73,14 @@ public class MandateService : IMandateService
         return mandateResponse ?? throw new BadRequestException("Failed to get mandate status. Please try again later or contact support.");
     }
 
-    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, MandateTransactionPayload? transactionPayload = null, decimal? amount = null)
+    public async Task<MandateTransactionResponse> DoFundsTransfer(Mandate mandate, MandateTransactionPayload? transactionPayload = null, decimal? amount = null, bool isCharge = false)
     {
         var token = await _genericServices.LogINToNibbsFundsTransfer();
         var payload = transactionPayload ?? mandate.BuildMandateTransactionPayload(bankcode: _bankCode, amount);
+        payload.BeneficiaryAccountNumber = isCharge ? _systemSettings.FeeAccountNumber : payload.BeneficiaryAccountNumber;
+        payload.BeneficiaryAccountName = isCharge ? _systemSettings.FeeAccountName : payload.BeneficiaryAccountName;
+        payload.BeneficiaryBankVerificationNumber = isCharge ? _systemSettings.FeeAccountBVN : payload.BeneficiaryBankVerificationNumber;
+        
         var jsonPayload = JsonConvert.SerializeObject(payload, new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver

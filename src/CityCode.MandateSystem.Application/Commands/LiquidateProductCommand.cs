@@ -13,6 +13,7 @@ namespace CityCode.MandateSystem.Application.Commands
     {
         public long MandateId { get; set; }
         public decimal Amount { get; set; }
+        public bool IsCharge { get; set; }
         public LiquidationType? LiquidationType { get; set; }
     }
 
