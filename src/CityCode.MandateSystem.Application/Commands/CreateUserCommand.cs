@@ -21,27 +21,50 @@ namespace CityCode.MandateSystem.Application.Commands
         public virtual List<PermissionDto>? Permission { get; set; }
     }
 
-    public class CreateUserCommandHandler(IApplicationDbContext context, IEmailService emailService) : IRequestHandler<CreateUserCommand, Common.Models.View.Result<User>>
+    public class CreateUserCommandHandler(IApplicationDbContext context, IEmailService emailService)
+        : IRequestHandler<CreateUserCommand, Common.Models.View.Result<User>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IEmailService _emailService = emailService;
 
-        public async Task<Common.Models.View.Result<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Common.Models.View.Result<User>> Handle(CreateUserCommand request,
+            CancellationToken cancellationToken)
         {
             var userExists = await _context.AppUsers.AnyAsync(x => x.Email == request.Email);
             if (userExists)
                 throw new BadRequestException("User already exists");
 
-            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber, request.Username, null!, true, DateTime.UtcNow, request.Role??"System User", request.IsSuperAdmin, request.InitiatedBy);
+            var user = new User(request.FirstName, request.LastName, request.Email, request.PhoneNumber,
+                request.Username, null!, true, DateTime.UtcNow, request.Role ?? "System User", request.IsSuperAdmin,
+                request.InitiatedBy);
             user.WithPermissions(request.Permission);
 
             await _context.AppUsers.AddAsync(user);
-            user.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Created User", DateCreated = DateTime.UtcNow, Entity = "Users" }));
-            var sent = await _emailService.SendEmail(user.Email, new MailContent { Header = "User created", Body = $"Dear {user.FullName}, welcome to city code mandate system. Please note that the password used upon signin will be your password until you reset the password", Subject = "WELCOME" });
+            user.AddDomainEvent(new ActivityLogEvent(new Activity
+                { Action = "Created User", DateCreated = DateTime.UtcNow, Entity = "Users" }));
+            
+            var sent = await _emailService.SendEmail(
+                user.Email,
+                new MailContent
+                {
+                    Header = "User Profile Created",
+                    Subject = "CityCode Direct Debit Mandate Application",
+                    Body = $@"
+            Dear {user.FullName},<br/><br/>
+            You’ve been successfully profiled on <b>CityCode’s Direct Debit Mandate Application</b>.<br/><br/>
+            The email you should use to access the application is: <b>{user.Email}</b>.<br/>
+            Also note that the password you use on first login will be stored as your password for subsequent access to the application.<br/><br/>
+            <a href='http://154.113.6.54:8002/' target='_blank'>Click here to access your dashboard</a>.<br/><br/>
+            For support, please reach out to the IT Department.<br/><br/>
+            Thank you.
+        "
+                });
+
             if (!sent)
             {
                 return Common.Models.View.Result<User>.Failure("Failed to send notification");
             }
+
             await _context.SaveChangesAsync(cancellationToken);
             return Common.Models.View.Result<User>.Success(DateTime.Now, user);
         }
