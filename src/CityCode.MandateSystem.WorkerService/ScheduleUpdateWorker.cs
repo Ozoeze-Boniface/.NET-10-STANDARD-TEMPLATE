@@ -38,7 +38,7 @@ public class ScheduleUpdateWorker : BackgroundService
                 var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
                 _logger.LogInformation("SCHEDULE UPDATE WORKER RUNNING");
-                var mandates = await context.MandateSchedules
+                var mandates = await context.MandateSchedules.Include(m => m.Mandate)
                     .Where(s =>
                         s.EndDate > DateOnly.FromDateTime(DateTime.Now) &&
                         !s.IsEnded &&
