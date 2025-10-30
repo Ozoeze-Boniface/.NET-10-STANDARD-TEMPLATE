@@ -1,3 +1,4 @@
+using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Common.Interfaces;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Extentions;
@@ -27,6 +28,7 @@ public class RetryTransactionPostingService(
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                
                 try
                 {
                     using var scope = factory.CreateScope();
@@ -36,7 +38,7 @@ public class RetryTransactionPostingService(
 
                     var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    var transactionRetries = await context.RetryTransactions.Where(t => !t.IsPosted)
+                    var transactionRetries = await context.RetryTransactions.Where(t => !t.IsPosted && t.RetryCount < 8)
                         .ToListAsync(stoppingToken);    
 
 
@@ -46,15 +48,26 @@ public class RetryTransactionPostingService(
                         var mandateSchedule = await context.MandateSchedules
                             .Include(s => s.Mandate)
                             .FirstOrDefaultAsync(s => s.MandateId == retry.MandateId, stoppingToken);
-
-                        var result = await ExecuteFundsTransferWithRetry(mandateSchedule!);
+                        
+                        MandateTransactionResponse result = null!;
+                        try
+                        {
+                            result = await ExecuteFundsTransferWithRetry(mandateSchedule!);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex.Message);
+                            retry.RetryCount += 1;
+                            await context.SaveChangesAsync(CancellationToken.None);
+                            throw new BadRequestException(ex.Message);
+                        }
 
                         logger.LogInformation("POSTING TRANSACTION RETRY FOR {MandateMandateId}: {response}",
                             retry.MandateId, JsonConvert.SerializeObject(result));
 
                         var transaction = new MandateTransaction(
                             mandateScheduleId: mandateSchedule!.MandateScheduleId,
-                            transactionReference: result.PaymentReference ?? string.Empty,
+                            transactionReference: result.PaymentReference,
                             amount: result.Amount,
                             currency: "NGN",
                             transactionDate: today,
@@ -92,7 +105,7 @@ public class RetryTransactionPostingService(
                     logger.LogError("Exception while posting transaction retry {error}", e.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(4), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(4), stoppingToken);
             }
         }
 
