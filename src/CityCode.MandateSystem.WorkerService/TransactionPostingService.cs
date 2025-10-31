@@ -1,4 +1,3 @@
-using System.Data;
 using System.Globalization;
 using CityCode.MandateSystem.Application.Common.Interfaces;
 using CityCode.MandateSystem.Application.Dtos;
@@ -9,7 +8,6 @@ using CityCode.MandateSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Npgsql;
 
 namespace CityCode.MandateSystem.WorkerService
 {
@@ -39,7 +37,7 @@ namespace CityCode.MandateSystem.WorkerService
 
                     var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    var schedules = await context.MandateSchedules
+                    var schedules = await _context.MandateSchedules
                         .Include(s => s.Mandate)
                         .Include(s => s.MandateTransactions)
                         .Where(s =>
@@ -81,9 +79,12 @@ namespace CityCode.MandateSystem.WorkerService
                                 result.TransactionLocation, result.Narration, result.PaymentReference!);
                             transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
 
+                            await _context.MandateTransactions.AddAsync(transaction, stoppingToken);
+
                             if (mandateSchedule.Mandate.TakeCharge)
                             {
-                                var resultForCharge = await ExecuteFundsTransferWithRetry(mandateSchedule, GetOnePercent(mandateSchedule.Mandate.TransactionAmount));
+                                var resultForCharge = await ExecuteFundsTransferWithRetry(mandateSchedule,
+                                    GetOnePercent(mandateSchedule.Mandate.TransactionAmount));
 
                                 logger.LogInformation(
                                     "POSTING CHARGE TRANSACTION RESPONSE FOR {MandateMandateId}: {response}",
@@ -100,7 +101,7 @@ namespace CityCode.MandateSystem.WorkerService
                                         transactionStatus: result.ResponseCode == "00"
                                             ? nameof(TransactionStatus.SUCCESSFUL)
                                             : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
-                                    transaction.UpdateFromResponse(result.ResponseCode, result.SessionID,
+                                    chargeTransaction.UpdateFromResponse(result.ResponseCode, result.SessionID,
                                         result.ChannelCode,
                                         result.NameEnquiryRef, result.DestinationInstitutionCode,
                                         result.BeneficiaryAccountName,
@@ -109,10 +110,10 @@ namespace CityCode.MandateSystem.WorkerService
                                         result.OriginatorAccountName, result.OriginatorAccountNumber,
                                         result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
                                         result.TransactionLocation, result.Narration, result.PaymentReference!);
-                                    transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL",
+                                    chargeTransaction.UpdateStatus(chargeTransaction.TransactionStatus, "SUCCESSFUL",
                                         result.TransactionId);
 
-                                    context.MandateTransactions.Add(chargeTransaction);
+                                    await _context.MandateTransactions.AddAsync(chargeTransaction, stoppingToken);
                                 }
                                 else
                                 {
@@ -123,8 +124,7 @@ namespace CityCode.MandateSystem.WorkerService
                             }
 
                             mandateSchedule.UpdateToNextRunDate();
-                            context.MandateTransactions.Add(transaction);
-                            await context.SaveChangesAsync(stoppingToken);
+                            await _context.SaveChangesAsync(stoppingToken);
 
                             logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}",
                                 mandateSchedule.MandateId);
@@ -226,7 +226,8 @@ namespace CityCode.MandateSystem.WorkerService
             mandateSchedule.UpdateToNextRunDate();
 
             var retryTransaction = new RetryTransaction(mandate.MandateId, false, string.Empty,
-                nibbsFailureMessage, DateTime.UtcNow, decimal.Parse(mandatetransactionPayload.Amount!), mandateSchedule.NextRunDate, 1);
+                nibbsFailureMessage, DateTime.UtcNow, decimal.Parse(mandatetransactionPayload.Amount!),
+                mandateSchedule.NextRunDate, 1);
 
             _context.RetryTransactions.Add(retryTransaction);
             _context.MandateTransactions.Add(transaction);
