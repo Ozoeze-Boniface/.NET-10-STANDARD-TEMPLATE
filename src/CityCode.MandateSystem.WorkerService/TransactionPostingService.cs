@@ -37,7 +37,7 @@ namespace CityCode.MandateSystem.WorkerService
 
                     var today = DateOnly.FromDateTime(DateTime.Now);
 
-                    var schedules = await context.MandateSchedules
+                    var schedules = await _context.MandateSchedules
                         .Include(s => s.Mandate)
                         .Include(s => s.MandateTransactions)
                         .Where(s =>
@@ -79,6 +79,8 @@ namespace CityCode.MandateSystem.WorkerService
                                 result.TransactionLocation, result.Narration, result.PaymentReference!);
                             transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
 
+                            await _context.MandateTransactions.AddAsync(transaction, stoppingToken);
+
                             if (mandateSchedule.Mandate.TakeCharge)
                             {
                                 var resultForCharge = await ExecuteFundsTransferWithRetry(mandateSchedule,
@@ -111,7 +113,7 @@ namespace CityCode.MandateSystem.WorkerService
                                     chargeTransaction.UpdateStatus(chargeTransaction.TransactionStatus, "SUCCESSFUL",
                                         result.TransactionId);
 
-                                    await context.MandateTransactions.AddAsync(chargeTransaction, stoppingToken);
+                                    await _context.MandateTransactions.AddAsync(chargeTransaction, stoppingToken);
                                 }
                                 else
                                 {
@@ -122,8 +124,7 @@ namespace CityCode.MandateSystem.WorkerService
                             }
 
                             mandateSchedule.UpdateToNextRunDate();
-                            await context.MandateTransactions.AddAsync(transaction, stoppingToken);
-                            await context.SaveChangesAsync(stoppingToken);
+                            await _context.SaveChangesAsync(stoppingToken);
 
                             logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}",
                                 mandateSchedule.MandateId);
