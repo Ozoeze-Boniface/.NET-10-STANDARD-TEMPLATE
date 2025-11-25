@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MediatR;
 using System.Reflection;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using CityCode.MandateSystem.Application.Common.Interfaces;
 using CityCode.MandateSystem.Infrastructure.Data;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddSingleton<IMandateService, MandateService>();
         services.AddSingleton<IGenericServices, GenericServices>();
         services.Configure<SystemSettings>(configuration.GetSection("SystemSettings").Bind);
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services.AddHttpClient("NibssClient", client =>
         {

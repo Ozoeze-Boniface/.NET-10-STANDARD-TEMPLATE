@@ -39,6 +39,7 @@ builder.Services.AddSingleton(topic);
 builder.Services.AddHostedService<ScheduleUpdateWorker>();
 builder.Services.AddHostedService<TransactionPostingService>();
 builder.Services.AddHostedService<RetryTransactionPostingService>();
+builder.Services.AddHostedService<DataMigrationWorkflow>();
 // builder.Services.AddHostedService<SampleWorker>();
 // builder.Services.AddApplicationServices();
 // builder.Services.AddInfrastructureServices(builder.Configuration);

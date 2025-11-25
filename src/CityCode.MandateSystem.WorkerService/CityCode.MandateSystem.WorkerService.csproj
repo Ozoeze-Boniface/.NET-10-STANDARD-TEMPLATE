@@ -12,6 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="CsvHelper" />
     <PackageReference Include="Dapper" />
     <!-- <PackageReference Include="MediatR" /> -->
     <PackageReference Include="Microsoft.Extensions.Hosting" />
