@@ -67,6 +67,30 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     return result;
                 })
                 .WithDisplayName("Liquidate Product");
+            
+            group.MapPost("/reject-mandate/{mandateRequestId}", async (ISender sender, [FromBody] RejectMandateRequestCommand command, [FromRoute] long mandateRequestId) =>
+                {
+                    command.MandateRequestId = mandateRequestId;
+                    var result = await sender.Send(command);
+                    return result;
+                })
+                .WithDisplayName("Reject Mandate");
+            
+            group.MapGet("/get-balance/{mandateId}", async (ISender sender, [FromBody] GetBalanceCommand command, [FromRoute] long mandateId) =>
+                {
+                    command.MandateId = mandateId;
+                    var result = await sender.Send(command);
+                    return result;
+                })
+                .WithDisplayName("Get Balance");
+            
+            group.MapPut("/edit-mandate/{mandateRequestId}", async (ISender sender, [FromBody] EditMandateCommand command, [FromRoute] long mandateRequestId) =>
+                {
+                    command.MandateRequestId = mandateRequestId;
+                    var result = await sender.Send(command);
+                    return result;
+                })
+                .WithDisplayName("Edit Mandate");
 
             group.MapGet("/get-status-count", async (ISender sender) =>
                 {

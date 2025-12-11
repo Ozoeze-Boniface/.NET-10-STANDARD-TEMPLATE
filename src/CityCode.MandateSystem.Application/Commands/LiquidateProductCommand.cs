@@ -1,6 +1,7 @@
 using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
+using CityCode.MandateSystem.Domain.Enums;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
@@ -33,7 +34,7 @@ namespace CityCode.MandateSystem.Application.Commands
             }
 
             decimal amount;
-            if(request.LiquidationType == LiquidationType.FULL)
+            if (request.LiquidationType == LiquidationType.FULL)
             {
                 var sumOfTransaction = await _context.MandateTransactions.Where(t => t.MandateId == request.MandateId)
                     .SumAsync(s => s.Amount, cancellationToken: cancellationToken);
@@ -43,7 +44,31 @@ namespace CityCode.MandateSystem.Application.Commands
             {
                 amount = request.Amount;
             }
+
+            var mandateSchedule = await _context.MandateSchedules.FirstOrDefaultAsync(s => s.MandateId == request.MandateId, cancellationToken: cancellationToken) ?? throw new BadRequestException("Mandate does not have a valid schedule");
+
             var result = await _mandateService.DoFundsTransfer(mandate, amount: amount, isCharge: request.IsCharge);
+            
+            var transaction = new MandateTransaction(
+                                mandateScheduleId: mandateSchedule.MandateScheduleId,
+                                transactionReference: result.PaymentReference ?? string.Empty,
+                                amount: result.Amount,
+                                currency: "NGN",
+                                transactionDate: DateOnly.FromDateTime(DateTime.Now),
+                                transactionStatus: result.ResponseCode == "00"
+                                    ? nameof(TransactionStatus.SUCCESSFUL)
+                                    : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
+            transaction.UpdateFromResponse(result.ResponseCode, result.SessionID, result.ChannelCode,
+                result.NameEnquiryRef, result.DestinationInstitutionCode, result.BeneficiaryAccountName,
+                result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
+                result.BeneficiaryBankVerificationNumber,
+                result.OriginatorAccountName, result.OriginatorAccountNumber,
+                result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
+                result.TransactionLocation, result.Narration, result.PaymentReference!);
+            transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
+
+            await _context.MandateTransactions.AddAsync(transaction, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Common.Models.View.Result<MandateTransactionResponse>.Success(DateTime.Now, result);
         }

@@ -1,9 +1,14 @@
+using CityCode.MandateSystem.Application.Commands;
+using CityCode.MandateSystem.Application.Settings;
 using CityCode.MandateSystem.Domain.Enums;
+using CityCode.MandateSystem.Domain.Events.ActivityLog;
+using Microsoft.Extensions.Options;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
-    public class CreateMandateCommand : IRequest<Common.Models.View.Result<MandateRequest>>
+public class EditMandateCommand : IRequest<Common.Models.View.Result<MandateRequest>>
     {
+        public long MandateRequestId { get; set; }
         public string InitiatedBy { get; set; } = string.Empty;
         public long InitiatedById { get; set; }
         public string SubscriberCode { get; set; } = string.Empty;
@@ -24,18 +29,21 @@ namespace CityCode.MandateSystem.Application.Commands
         public string SourceInstitutionCode { get; set; } = string.Empty;
         public string Narration { get; set; } = string.Empty;
         public int MandateType { get; set; }
-        public MandateRequestStatus MandateRequestStatus { get; set; } = MandateRequestStatus.IN_REVIEW;
+        public MandateRequestStatus MandateRequestStatus { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
-        public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
+        public PaymentFrequency PaymentFrequency { get; set; }
         public string Location { get; set; } = string.Empty;
-        public bool TakeCharge { get; set; } = false;
+        public bool TakeCharge { get; set; }
     }
 
-    public class CreateMandateCommandValidator : AbstractValidator<CreateMandateCommand>
+    public class EditMandateCommandValidator : AbstractValidator<EditMandateCommand>
     {
-        public CreateMandateCommandValidator()
+        public EditMandateCommandValidator()
         {
+            RuleFor(x => x.MandateRequestId)
+                .GreaterThan(0).WithMessage("Id must be greater than 0.");
+
             RuleFor(x => x.InitiatedBy)
                 .NotEmpty().WithMessage("InitiatedBy is required.")
                 .MaximumLength(100);
@@ -131,6 +139,50 @@ namespace CityCode.MandateSystem.Application.Commands
             RuleFor(x => x.PaymentFrequency)
                 .NotEmpty().WithMessage("PaymentFrequency is required.")
                 .IsInEnum().WithMessage("PaymentFrequency must be a valid enum value.");
+        }
+    }
+}
+
+namespace CityCode.MandateSystem.Application.CommandHandlers
+{
+    public class EditMandateCommandHandler : IRequestHandler<EditMandateCommand, Common.Models.View.Result<MandateRequest>>
+    {
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly SystemSettings _systemSettings;
+
+        public EditMandateCommandHandler(IApplicationDbContext context, IMapper mapper, IOptions<SystemSettings> systemSettings)
+        {
+            _context = context;
+            _mapper = mapper;
+            _systemSettings = systemSettings.Value;
+        }
+
+        public async Task<Common.Models.View.Result<MandateRequest>> Handle(EditMandateCommand request, CancellationToken cancellationToken)
+        {
+            var mandateRequest = await _context.MandateRequests
+                .FirstOrDefaultAsync(x => x.MandateRequestId == request.MandateRequestId, cancellationToken);
+
+            if (mandateRequest == null)
+            {
+                return Common.Models.View.Result<MandateRequest>.Failure(DateTime.UtcNow, "Mandate request not found.");
+            }
+            _mapper.Map(request, mandateRequest);
+
+            mandateRequest.SetInitiatorDetails(request.InitiatedBy, request.InitiatedById);
+
+            // Add domain event for activity log
+            mandateRequest.AddDomainEvent(new ActivityLogEvent(new Activity
+            {
+                Action = "Updated Mandate",
+                DateCreated = DateTime.UtcNow,
+                Entity = "MandateRequest"
+            }));
+
+            // EF Core will track the changes and only update modified properties
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Common.Models.View.Result<MandateRequest>.Success(DateTime.UtcNow, mandateRequest);
         }
     }
 }

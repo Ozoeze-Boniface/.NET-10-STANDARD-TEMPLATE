@@ -8,7 +8,7 @@ public class GetMandateStatusQueryHandler(IApplicationDbContext context) : IRequ
 {
     public async Task<Common.Models.View.Result<MandateStatusResponse>> Handle(GetMandateStatusCountQuery request, CancellationToken cancellationToken)
     {
-        var activeCount = await context.Mandates.CountAsync(m => m.WorkflowStatus == WorkflowStatus.MANDATE_APPROVED_BY_BANK, cancellationToken);
+        var activeCount = await context.MandateSchedules.CountAsync(ms => !ms.IsEnded, cancellationToken);
         var inactiveCount = await context.Mandates.CountAsync(m => m.WorkflowStatus == WorkflowStatus.BILLER_INITIATED, cancellationToken);
         var suspendedCount = await context.MandateSchedules.CountAsync(m => m.IsEnded, cancellationToken);
 
