@@ -76,9 +76,12 @@ namespace CityCode.MandateSystem.Api.Endpoints
                 })
                 .WithDisplayName("Reject Mandate");
             
-            group.MapGet("/get-balance/{mandateId}", async (ISender sender, [FromBody] GetBalanceCommand command, [FromRoute] long mandateId) =>
+            group.MapGet("/get-balance/{mandateId}", async (ISender sender, [FromRoute] long mandateId) =>
                 {
-                    command.MandateId = mandateId;
+                    var command = new GetBalanceCommand
+                    {
+                        MandateId = mandateId
+                    };
                     var result = await sender.Send(command);
                     return result;
                 })
