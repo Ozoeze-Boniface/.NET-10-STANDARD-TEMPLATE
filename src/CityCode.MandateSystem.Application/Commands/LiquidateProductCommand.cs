@@ -14,6 +14,7 @@ namespace CityCode.MandateSystem.Application.Commands
     {
         public long MandateId { get; set; }
         public decimal Amount { get; set; }
+        public decimal? NewInstallmentAmount { get; set; }
         public bool IsCharge { get; set; }
         public LiquidationType? LiquidationType { get; set; }
     }
@@ -68,6 +69,15 @@ namespace CityCode.MandateSystem.Application.Commands
             transaction.UpdateStatus(transaction.TransactionStatus, "SUCCESSFUL", result.TransactionId);
 
             await _context.MandateTransactions.AddAsync(transaction, cancellationToken);
+            if (request.NewInstallmentAmount.HasValue)
+            {
+                var mandateRequest =
+                    await _context.MandateRequests.FirstOrDefaultAsync(r =>
+                        r.MandateReference == mandate.MandateReference, cancellationToken: cancellationToken);
+                
+                mandate.TransactionAmount = request.NewInstallmentAmount.Value;
+                mandateRequest!.TransactionAmount = request.NewInstallmentAmount.Value;
+            }
             await _context.SaveChangesAsync(cancellationToken);
 
             return Common.Models.View.Result<MandateTransactionResponse>.Success(DateTime.Now, result);
