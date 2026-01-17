@@ -13,6 +13,7 @@ namespace CityCode.MandateSystem.Application.Settings
         public string FeeAccountNumber { get; set; } = string.Empty;
         public string FeeAccountName { get; set; } = string.Empty;
         public string FeeAccountBVN { get; set; } = string.Empty;
+        public string FrontEndUrl { get; set; } = string.Empty;
         public EmailSettings? EmailSettings { get; set; }
         public NibssSettings? NibssSettings { get; set; }
     }

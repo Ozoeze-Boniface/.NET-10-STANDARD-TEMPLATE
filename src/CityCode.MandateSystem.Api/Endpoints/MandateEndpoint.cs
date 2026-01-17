@@ -1,6 +1,5 @@
 using CityCode.MandateSystem.Api.Extentions;
 using CityCode.MandateSystem.Application.Query;
-using CityCode.MandateSystem.Application.QueryHandlers;
 using CityCode.MandateSystem.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,8 +65,8 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     var result = await sender.Send(command);
                     return result;
                 })
-                .WithDisplayName("Liquidate Product");
-            
+                .WithDisplayName("Liquidate Product").RequirePermission(PermissionConstants.LiquidateMandate);
+
             group.MapPost("/reject-mandate/{mandateRequestId}", async (ISender sender, [FromBody] RejectMandateRequestCommand command, [FromRoute] long mandateRequestId) =>
                 {
                     command.MandateRequestId = mandateRequestId;
@@ -75,7 +74,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     return result;
                 })
                 .WithDisplayName("Reject Mandate");
-            
+
             group.MapGet("/get-balance/{mandateId}", async (ISender sender, [FromRoute] long mandateId) =>
                 {
                     var command = new GetBalanceCommand
@@ -86,7 +85,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     return result;
                 })
                 .WithDisplayName("Get Balance");
-            
+
             group.MapPut("/edit-mandate/{mandateRequestId}", async (ISender sender, [FromBody] EditMandateCommand command, [FromRoute] long mandateRequestId) =>
                 {
                     command.MandateRequestId = mandateRequestId;

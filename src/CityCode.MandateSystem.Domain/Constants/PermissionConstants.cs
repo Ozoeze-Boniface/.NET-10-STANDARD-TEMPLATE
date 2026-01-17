@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace CityCode.MandateSystem.Domain.Constants
 {
     public class PermissionConstants
@@ -14,7 +9,8 @@ namespace CityCode.MandateSystem.Domain.Constants
         public const string ApproveMandate = "APPROVE_MANDATE_LIFECYCLE";
         public const string ViewReport = "VIEW_REPORTS";
         public const string DownloadReport = "DOWNLOAD_REPORTS";
-
+        public const string LiquidateMandate = "CAN_LIQUIDATE_MANDATE";
+        public const string ManageStatus = "CAN_MANAGE_MANDATE_STATUS";
 
         // User
         public const string ViewUserReport = "VIEW_USER_REPORTS";

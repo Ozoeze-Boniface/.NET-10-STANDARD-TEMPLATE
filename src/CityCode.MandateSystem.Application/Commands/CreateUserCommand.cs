@@ -1,8 +1,10 @@
 using CityCode.MandateSystem.Application.Common.Exceptions;
 using CityCode.MandateSystem.Application.Dtos;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
+using CityCode.MandateSystem.Application.Settings;
 using CityCode.MandateSystem.Domain.DomainDto;
 using CityCode.MandateSystem.Domain.Events.ActivityLog;
+using Microsoft.Extensions.Options;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
@@ -21,7 +23,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public virtual List<PermissionDto>? Permission { get; set; }
     }
 
-    public class CreateUserCommandHandler(IApplicationDbContext context, IEmailService emailService)
+    public class CreateUserCommandHandler(IApplicationDbContext context, IEmailService emailService, IOptions<SystemSettings> options)
         : IRequestHandler<CreateUserCommand, Common.Models.View.Result<User>>
     {
         private readonly IApplicationDbContext _context = context;
@@ -42,7 +44,9 @@ namespace CityCode.MandateSystem.Application.Commands
             await _context.AppUsers.AddAsync(user);
             user.AddDomainEvent(new ActivityLogEvent(new Activity
                 { Action = "Created User", DateCreated = DateTime.UtcNow, Entity = "Users" }));
-            
+
+            SystemSettings systemSettings = options.Value;
+            var url = systemSettings.FrontEndUrl;
             var sent = await _emailService.SendEmail(
                 user.Email,
                 new MailContent
@@ -54,7 +58,7 @@ namespace CityCode.MandateSystem.Application.Commands
             You’ve been successfully profiled on <b>CityCode’s Direct Debit Mandate Application</b>.<br/><br/>
             The email you should use to access the application is: <b>{user.Email}</b>.<br/>
             Also note that the password you use on first login will be stored as your password for subsequent access to the application.<br/><br/>
-            <a href='http://154.113.6.54:8002/' target='_blank'>Click here to access your dashboard</a>.<br/><br/>
+            <a href='{url}' target='_blank'>Click here to access your dashboard</a>.<br/><br/>
             For support, please reach out to the IT Department.<br/><br/>
             Thank you.
         "
