@@ -15,6 +15,7 @@ namespace CityCode.MandateSystem.WorkerService
         ILogger<TransactionPostingService> logger,
         IServiceScopeFactory factory,
         IMandateService mandateService,
+        IEmailService emailService,
         IOptions<SystemSettings> systemSettings)
         : BackgroundService
     {
@@ -125,6 +126,61 @@ namespace CityCode.MandateSystem.WorkerService
 
                             mandateSchedule.UpdateToNextRunDate();
                             await _context.SaveChangesAsync(stoppingToken);
+
+                            _ = Task.Run(async () =>
+                            {
+                                try
+                                {
+                                    var sent = await emailService.SendEmail(
+                                        mandateSchedule.Mandate.PayerEmail,
+                                        new MailContent
+                                        {
+                                            Header = "Direct Debit Notification",
+                                            Subject = "CityCode Direct Debit Mandate Application",
+                                            Body = $@"
+                                                Dear {mandateSchedule.Mandate.PayerName},<br/><br/>
+
+                                                This is to notify you that a <b>Direct Debit transaction</b> has been successfully processed on your account under your approved mandate with <b>CityCode</b>.<br/><br/>
+
+                                                <b>Transaction Details:</b><br/>
+                                                Amount: <b>NGN {result.Amount:N2}</b><br/>
+                                                Transaction Reference: <b>{result.PaymentReference}</b><br/>
+                                                Date: <b>{today:dd MMM yyyy}</b><br/>
+                                                Status: <b>Successful</b><br/><br/>
+
+                                                If this transaction was not authorized by you or you require further clarification, please contact our support team immediately.<br/><br/>
+
+                                                Thank you for choosing CityCode.<br/><br/>
+
+                                                Warm regards,<br/>
+                                                <b>CityCode Direct Debit Team</b>
+                                                "
+                                        });
+
+                                    if (sent)
+                                    {
+                                        logger.LogInformation(
+                                            "Successfully sent mandate transaction notification to {PayerEmail} for MandateId {MandateId}",
+                                            mandateSchedule.Mandate.PayerEmail,
+                                            mandateSchedule.MandateId);
+                                    }
+                                    else
+                                    {
+                                        logger.LogWarning(
+                                            "Failed to send mandate transaction notification to {PayerEmail} for MandateId {MandateId}",
+                                            mandateSchedule.Mandate.PayerEmail,
+                                            mandateSchedule.MandateId);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(
+                                        ex,
+                                        "Error occurred while sending mandate transaction email to {PayerEmail} for MandateId {MandateId}",
+                                        mandateSchedule.Mandate.PayerEmail,
+                                        mandateSchedule.MandateId);
+                                }
+                            }, stoppingToken);
 
                             logger.LogInformation("DONE POSTING TRANSACTION FOR {MandateMandateId}",
                                 mandateSchedule.MandateId);
