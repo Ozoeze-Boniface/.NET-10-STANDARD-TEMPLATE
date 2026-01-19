@@ -8,6 +8,7 @@ namespace CityCode.MandateSystem.Application.Query
     {
         public long? MandateId { get; set; }
         public string? TransactionStatus { get; set; }
+        public string? CustomerName { get; set; } = default!;
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public int? PageSize { get; set; }

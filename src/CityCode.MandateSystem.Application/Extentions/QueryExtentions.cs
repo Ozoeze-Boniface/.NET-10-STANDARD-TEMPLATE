@@ -297,6 +297,12 @@ namespace CityCode.MandateSystem.Application.Extentions
                 query = query.Where(t => t.MandateId == request.MandateId);
             }
 
+            if(request.CustomerName is not null)
+            {
+                query = query.Where(t => t.BeneficiaryAccountName!.Contains(request.CustomerName) 
+                || t.OriginatorAccountName.Contains(request.CustomerName));
+            }
+
             return query;
         }
     }
