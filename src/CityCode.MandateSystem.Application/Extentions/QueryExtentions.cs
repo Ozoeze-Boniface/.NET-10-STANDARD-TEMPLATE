@@ -297,10 +297,14 @@ namespace CityCode.MandateSystem.Application.Extentions
                 query = query.Where(t => t.MandateId == request.MandateId);
             }
 
-            if(request.CustomerName is not null)
+            if (!string.IsNullOrWhiteSpace(request.CustomerName))
             {
-                query = query.Where(t => t.BeneficiaryAccountName.Contains(request.CustomerName, StringComparison.CurrentCultureIgnoreCase)
-                || t.OriginatorAccountName.Contains(request.CustomerName));
+                var pattern = $"%{request.CustomerName}%";
+
+                query = query.Where(t =>
+                    EF.Functions.ILike(t.BeneficiaryAccountName, pattern) ||
+                    EF.Functions.ILike(t.OriginatorAccountName, pattern)
+                );
             }
 
             return query;
