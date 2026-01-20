@@ -299,7 +299,7 @@ namespace CityCode.MandateSystem.Application.Extentions
 
             if(request.CustomerName is not null)
             {
-                query = query.Where(t => t.BeneficiaryAccountName!.Contains(request.CustomerName) 
+                query = query.Where(t => t.BeneficiaryAccountName.Contains(request.CustomerName, StringComparison.CurrentCultureIgnoreCase)
                 || t.OriginatorAccountName.Contains(request.CustomerName));
             }
 
