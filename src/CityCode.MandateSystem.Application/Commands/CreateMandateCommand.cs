@@ -1,4 +1,5 @@
 using CityCode.MandateSystem.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace CityCode.MandateSystem.Application.Commands
 {
@@ -30,6 +31,7 @@ namespace CityCode.MandateSystem.Application.Commands
         public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
         public bool TakeCharge { get; set; } = false;
+        public List<IFormFile>? Documents { get; set; }
     }
 
     public class CreateMandateCommandValidator : AbstractValidator<CreateMandateCommand>

@@ -33,6 +33,7 @@ namespace CityCode.MandateSystem.Domain.Entities
         public PaymentFrequency PaymentFrequency { get; set; } = PaymentFrequency.Monthly;
         public string Location { get; set; } = string.Empty;
         public bool TakeCharge { get; set; }
+        public virtual List<Document>? Documents { get; set; } = [];
 
         public void UpdateMandateStatus(MandateStatus status)
         {

@@ -6,7 +6,7 @@ namespace CityCode.MandateSystem.Application.Common.Mappings
     {
         public MapProfile()
         {
-            CreateMap<CreateMandateCommand, MandateRequest>().ReverseMap();
+            CreateMap<CreateMandateCommand, MandateRequest>().ReverseMap().ForMember(dest => dest.Documents, opt => opt.Ignore());
             
             CreateMap<MandateRequest, Mandate>()
                 .ForMember(dest => dest.DomainEvents, opt => opt.Ignore())

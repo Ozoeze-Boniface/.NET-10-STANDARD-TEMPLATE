@@ -19,6 +19,7 @@ public interface IApplicationDbContext
     DbSet<Bank> Banks  { get; }
     DbSet<MandateTransaction> MandateTransactions  { get; }
     DbSet<RetryTransaction> RetryTransactions { get; }
+    DbSet<Document> Documents { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

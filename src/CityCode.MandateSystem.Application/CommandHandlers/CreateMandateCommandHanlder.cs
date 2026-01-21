@@ -24,7 +24,27 @@ namespace CityCode.MandateSystem.Application.CommandHandlers
             mandateRequest.SetBillerAndProductDetails(_systemSettings.BillerId, _systemSettings.ProductId);
             mandateRequest.GenerateMandateRefernce();
             mandateRequest.SetInitiatorDetails(request.InitiatedBy, request.InitiatedById);
-            await _context.MandateRequests.AddAsync(mandateRequest);
+            await _context.MandateRequests.AddAsync(mandateRequest, cancellationToken);
+
+            if (request.Documents != null && request.Documents.Count != 0)
+            {
+                foreach (var formFile in request.Documents!)
+                {
+                    if (formFile.Length > 0)
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await formFile.CopyToAsync(memoryStream, cancellationToken);
+                        var document = new Document
+                        {
+                            MandateReference = mandateRequest.MandateReference,
+                            DocumentName = formFile.FileName,
+                            ContentType = formFile.ContentType,
+                            FileData = memoryStream.ToArray()
+                        };
+                        await _context.Documents.AddAsync(document, cancellationToken);
+                    }
+                }
+            }
 
             mandateRequest.AddDomainEvent(new ActivityLogEvent(new Activity { Action = "Initiated Mandate creation", DateCreated = DateTime.UtcNow, Entity = "MandateRequest" }));
 

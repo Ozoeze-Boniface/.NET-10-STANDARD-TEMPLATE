@@ -37,6 +37,12 @@ public class ServiceDefinition : IEndpointDefinition
                         .RequireCors("corsapp")
                         .RequireRateLimiting("LimitPolicy")
                         .WithTags("Transactions Manager");
+                
+                app.MapGroup("/documents")
+                        .DocumentGroup()
+                        .RequireCors("corsapp")
+                        .RequireRateLimiting("LimitPolicy")
+                        .WithTags("Document Manager");
         }
 
         public void DefineServices(IServiceCollection services)

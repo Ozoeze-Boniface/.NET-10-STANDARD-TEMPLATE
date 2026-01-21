@@ -24,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Bank> Banks => this.Set<Bank>();
     public DbSet<MandateTransaction> MandateTransactions => this.Set<MandateTransaction>();
     public DbSet<RetryTransaction> RetryTransactions => this.Set<RetryTransaction>();
+    public DbSet<Document> Documents => this.Set<Document>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
