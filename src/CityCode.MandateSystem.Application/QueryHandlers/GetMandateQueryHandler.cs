@@ -9,7 +9,7 @@ namespace CityCode.MandateSystem.Application.QueryHandlers
     {
         public async Task<Common.Models.View.Result<PaginatedList<Mandate>>> Handle(GetMandateQuery request, CancellationToken cancellationToken)
         {
-            var query = context.Mandates.Include(d => d.Documents).AsQueryable().ApplyFilters(request);
+            var query = context.Mandates.AsQueryable().ApplyFilters(request);
 
             var result = await query.PaginatedListAsync(request.PageNumber, request.PageSize);
 

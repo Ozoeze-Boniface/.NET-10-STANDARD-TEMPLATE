@@ -111,10 +111,7 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
                 .HasConversion<int>() // enum to int
                 .IsRequired();
             
-            builder.HasMany(m => m.Documents)
-                .WithOne()
-                .HasForeignKey(d => d.MandateReference)
-                .HasPrincipalKey(m => m.MandateReference).IsRequired(false);
+            builder.Ignore(m => m.Documents);
         }
     }
 }

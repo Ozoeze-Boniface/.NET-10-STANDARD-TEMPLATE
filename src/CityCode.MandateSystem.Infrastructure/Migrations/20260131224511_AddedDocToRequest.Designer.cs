@@ -3,6 +3,7 @@ using System;
 using CityCode.MandateSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CityCode.MandateSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260131224511_AddedDocToRequest")]
+    partial class AddedDocToRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,7 +213,7 @@ namespace CityCode.MandateSystem.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MandateReference")
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<long?>("MandateRequestId")
                         .HasColumnType("bigint");
@@ -231,6 +234,8 @@ namespace CityCode.MandateSystem.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("DocumentId");
+
+                    b.HasIndex("MandateReference");
 
                     b.HasIndex("MandateRequestId");
 
@@ -1565,6 +1570,11 @@ namespace CityCode.MandateSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("CityCode.MandateSystem.Domain.Entities.Document", b =>
                 {
+                    b.HasOne("CityCode.MandateSystem.Domain.Entities.Mandate", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("MandateReference")
+                        .HasPrincipalKey("MandateReference");
+
                     b.HasOne("CityCode.MandateSystem.Domain.Entities.MandateRequest", null)
                         .WithMany("Documents")
                         .HasForeignKey("MandateRequestId");
@@ -1683,6 +1693,11 @@ namespace CityCode.MandateSystem.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CityCode.MandateSystem.Domain.Entities.Mandate", b =>
+                {
+                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("CityCode.MandateSystem.Domain.Entities.MandateRequest", b =>
