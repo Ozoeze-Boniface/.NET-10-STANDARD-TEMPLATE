@@ -110,8 +110,12 @@ namespace CityCode.MandateSystem.Infrastructure.Data.Configurations
             builder.Property(m => m.PaymentFrequency)
                 .HasConversion<int>() // enum to int
                 .IsRequired();
-            
-            builder.Ignore(m => m.Documents);
+
+            // builder.Ignore(m => m.Documents);
+            builder.HasMany(m => m.Documents)
+                .WithOne()
+                .HasForeignKey(d => d.MandateReference)
+                .HasPrincipalKey(m => m.MandateReference).IsRequired(false);
         }
     }
 }

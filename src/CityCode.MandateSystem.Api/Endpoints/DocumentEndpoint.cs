@@ -1,3 +1,4 @@
+using CityCode.MandateSystem.Application.Query;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityCode.MandateSystem.Api.Endpoints
@@ -35,6 +36,14 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     );
                 })
                 .WithDisplayName("Download Document");
+
+            group.MapGet("/documents-by-mandate-reference/{mandateReference}", async (string mandateReference, ISender sender) =>
+                {
+                    var query = new GetDocumentsByMandateReferenceQuery { MandateReference = mandateReference };
+                    var result = await sender.Send(query);
+                    return result;
+                })
+                .WithDisplayName("Get Documents By Mandate Reference");
             
             return group;
         }
