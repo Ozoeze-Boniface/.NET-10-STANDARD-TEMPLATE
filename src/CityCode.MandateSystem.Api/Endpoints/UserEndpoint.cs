@@ -49,6 +49,13 @@ namespace CityCode.MandateSystem.Api.Endpoints
            })
            .WithDisplayName("edit Users").RequirePermission(PermissionConstants.EditUser);
 
+            group.MapPost("/send-bulk-email", async (SendBulkEmailCommand command, ISender sender) =>
+           {
+               var result = await sender.Send(command);
+               return result;
+           })
+           .WithDisplayName("Send Bulk Email");
+
             return group;
         }
     }
