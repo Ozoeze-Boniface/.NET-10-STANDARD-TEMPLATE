@@ -13,7 +13,7 @@ namespace CityCode.MandateSystem.Application.Commands
     {
         public async Task<Common.Models.View.Result<string>> Handle(DeactivateMandateCommand request, CancellationToken cancellationToken)
         {
-            var mandate = await context.Mandates.FindAsync(new object?[] { request.MandateId, cancellationToken, cancellationToken }, cancellationToken: cancellationToken);
+            var mandate = await context.Mandates.FindAsync(new object?[] { request.MandateId, cancellationToken }, cancellationToken: cancellationToken);
             if(mandate is null)
             {
                 throw new BadRequestException("Mandate does not exist");
