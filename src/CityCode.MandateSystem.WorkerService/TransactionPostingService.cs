@@ -14,7 +14,7 @@ namespace CityCode.MandateSystem.WorkerService
     public class TransactionPostingService(
         ILogger<TransactionPostingService> logger,
         IServiceScopeFactory factory,
-        IMandateService mandateService,
+        IMandateService mandateService, 
         IEmailService emailService,
         IOptions<SystemSettings> systemSettings)
         : BackgroundService
@@ -95,24 +95,24 @@ namespace CityCode.MandateSystem.WorkerService
                                 {
                                     var chargeTransaction = new MandateTransaction(
                                         mandateScheduleId: mandateSchedule.MandateScheduleId,
-                                        transactionReference: result.PaymentReference ?? string.Empty,
-                                        amount: result.Amount,
+                                        transactionReference: resultForCharge.PaymentReference ?? string.Empty,
+                                        amount: resultForCharge.Amount,
                                         currency: "NGN",
                                         transactionDate: today,
-                                        transactionStatus: result.ResponseCode == "00"
+                                        transactionStatus: resultForCharge.ResponseCode == "00"
                                             ? nameof(TransactionStatus.SUCCESSFUL)
                                             : nameof(TransactionStatus.FAILED), mandateSchedule.MandateId);
-                                    chargeTransaction.UpdateFromResponse(result.ResponseCode, result.SessionID,
-                                        result.ChannelCode,
-                                        result.NameEnquiryRef, result.DestinationInstitutionCode,
-                                        result.BeneficiaryAccountName,
-                                        result.BeneficiaryAccountNumber, result.BeneficiaryKYCLevel,
-                                        result.BeneficiaryBankVerificationNumber,
-                                        result.OriginatorAccountName, result.OriginatorAccountNumber,
-                                        result.OriginatorBankVerificationNumber, result.OriginatorKYCLevel,
-                                        result.TransactionLocation, result.Narration, result.PaymentReference!);
+                                    chargeTransaction.UpdateFromResponse(resultForCharge.ResponseCode, resultForCharge.SessionID,
+                                        resultForCharge.ChannelCode,
+                                        resultForCharge.NameEnquiryRef, resultForCharge.DestinationInstitutionCode,
+                                        resultForCharge.BeneficiaryAccountName,
+                                        resultForCharge.BeneficiaryAccountNumber, resultForCharge.BeneficiaryKYCLevel,
+                                        resultForCharge.BeneficiaryBankVerificationNumber,
+                                        resultForCharge.OriginatorAccountName, resultForCharge.OriginatorAccountNumber,
+                                        resultForCharge.OriginatorBankVerificationNumber, resultForCharge.OriginatorKYCLevel,
+                                        resultForCharge.TransactionLocation, resultForCharge.Narration, resultForCharge.PaymentReference!);
                                     chargeTransaction.UpdateStatus(chargeTransaction.TransactionStatus, "SUCCESSFUL",
-                                        result.TransactionId);
+                                        resultForCharge.TransactionId);
 
                                     await _context.MandateTransactions.AddAsync(chargeTransaction, stoppingToken);
                                 }

@@ -12,6 +12,7 @@ using StackExchange.Redis;
 using Serilog.Sinks.Elasticsearch;
 using CityCode.MandateSystem.Application.Services.UtilityServices.Interfaces;
 using CityCode.MandateSystem.Application.ExternalServices;
+using CityCode.MandateSystem.Application.Services.UtilityServices.Implementations;
 using CityCode.MandateSystem.Application.Settings;
 
 public static class DependencyInjection
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.AddSingleton<IGenericServices, GenericServices>();
         services.Configure<SystemSettings>(configuration.GetSection("SystemSettings").Bind);
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddSingleton<IEmailService, EmailService>();
 
         services.AddHttpClient("NibssClient", client =>
         {
