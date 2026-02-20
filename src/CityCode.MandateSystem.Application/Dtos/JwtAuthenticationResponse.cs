@@ -13,8 +13,8 @@ namespace CityCode.MandateSystem.Application.Dtos
         }
 
         public bool IsAuthenticated { get; set; }
-        public User User { get; set; } = null!;
-        public IEnumerable<Permission> Permissions { get; set; } = [];
+        public TokenUserData User { get; set; } = new();
+        public IEnumerable<TokenPermissionData> Permissions { get; set; } = [];
         public string? Role { get; set; }
     }
 }

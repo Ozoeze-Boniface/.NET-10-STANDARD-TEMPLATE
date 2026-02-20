@@ -4,6 +4,7 @@ using SeaBaas.CentralJournalPosting.Api.Infrastructure;
 using CityCode.MandateSystem.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+const string CorsPolicyName = "corsapp";
 
 // Add services to the container.
 //builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
@@ -12,7 +13,24 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder => builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()));
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, corsPolicy =>
+    {
+        if (allowedOrigins.Length == 0 || allowedOrigins.Contains("*"))
+        {
+            corsPolicy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            return;
+        }
+
+        corsPolicy.WithOrigins(allowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 
 // builder.Services.ConfigureApplicationCookie(options =>
@@ -57,12 +75,12 @@ app.UseStaticFiles();
 await app.InitializeSeed(CancellationToken.None);
 app.UseExceptionHandler(options => { });
 app.UseCustomExceptionHandler();
-app.MapEndpoints();
 app.UseSerilogRequestLogging();
-app.UseEndpointDefinitions();
-app.UseCors();
+app.UseCors(CorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapEndpoints();
+app.UseEndpointDefinitions();
 
 //app.UseSwagger();
 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CityCode.MandateSystem Middleware"));

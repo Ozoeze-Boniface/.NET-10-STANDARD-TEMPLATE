@@ -68,19 +68,24 @@ namespace CityCode.MandateSystem.Application.Commands
 
         private string GenerateToken(User user)
         {
-            List<Permission> permission = null!;
-            if (user.Permission is not null)
+            var tokenUser = new TokenUserData
             {
-                permission = user.Permission.Any() ? user.Permission : null!;
-            }
+                UserId = user.UserId,
+                IsSuperAdmin = user.IsSuperAdmin
+            };
+
+            var tokenPermissions = user.Permission?
+                .Where(permission => !string.IsNullOrWhiteSpace(permission.Name))
+                .Select(permission => new TokenPermissionData { Name = permission.Name })
+                .ToList() ?? [];
 
             var claims = new List<Claim>()
             {
                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.Name, user.FullName),
-                new(ClaimTypes.UserData, JsonConvert.SerializeObject(new UserTokenData(true, user,
-                    permission, nameof(user.Role))))
+                new(ClaimTypes.UserData, JsonConvert.SerializeObject(new UserTokenData(true, tokenUser,
+                    tokenPermissions, user.Role)))
             };
 
             string jwtSecret = _jwtSettings.JwtSecret;
