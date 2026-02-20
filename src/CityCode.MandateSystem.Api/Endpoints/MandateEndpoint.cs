@@ -65,7 +65,7 @@ namespace CityCode.MandateSystem.Api.Endpoints
                     var result = await sender.Send(command);
                     return result;
                 })
-                .WithDisplayName("Liquidate Product").RequirePermission(PermissionConstants.LiquidateMandate);
+                .WithDisplayName("Liquidate Product");//.RequirePermission(PermissionConstants.LiquidateMandate);
 
             group.MapPost("/reject-mandate/{mandateRequestId}", async (ISender sender, [FromBody] RejectMandateRequestCommand command, [FromRoute] long mandateRequestId) =>
                 {
