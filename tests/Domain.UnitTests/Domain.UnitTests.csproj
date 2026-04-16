@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>CityCode.MandateSystem.Domain.UnitTests</RootNamespace>
-        <AssemblyName>CityCode.MandateSystem.Domain.UnitTests</AssemblyName>
+        <RootNamespace>KeyRails.BankingApi.Domain.UnitTests</RootNamespace>
+        <AssemblyName>KeyRails.BankingApi.Domain.UnitTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\CityCode.MandateSystem.Domain\CityCode.MandateSystem.Domain.csproj" />
+        <ProjectReference Include="..\..\src\KeyRails.BankingApi.Domain\KeyRails.BankingApi.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests.TodoLists.Commands;
-using CityCode.MandateSystem.Application.TodoLists.Commands.CreateTodoList;
-using CityCode.MandateSystem.Application.TodoLists.Commands.DeleteTodoList;
-using CityCode.MandateSystem.Domain.Entities;
+namespace KeyRails.BankingApi.Application.FunctionalTests.TodoLists.Commands;
+using KeyRails.BankingApi.Application.TodoLists.Commands.CreateTodoList;
+using KeyRails.BankingApi.Application.TodoLists.Commands.DeleteTodoList;
+using KeyRails.BankingApi.Domain.Entities;
 using static Testing;
 
 public class DeleteTodoListTests : BaseTestFixture

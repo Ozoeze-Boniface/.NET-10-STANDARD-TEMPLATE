@@ -1,8 +1,8 @@
-namespace CityCode.MandateSystem.Application.UnitTests.Common.Exceptions;
+namespace KeyRails.BankingApi.Application.UnitTests.Common.Exceptions;
 using FluentAssertions;
 using FluentValidation.Results;
 using NUnit.Framework;
-using CityCode.MandateSystem.Application.Common.Exceptions;
+using KeyRails.BankingApi.Application.Common.Exceptions;
 
 
 public class ValidationExceptionTests

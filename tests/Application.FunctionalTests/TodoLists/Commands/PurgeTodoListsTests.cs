@@ -1,9 +1,9 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests.TodoLists.Commands;
-using CityCode.MandateSystem.Application.Common.Exceptions;
-using CityCode.MandateSystem.Application.Common.Security;
-using CityCode.MandateSystem.Application.TodoLists.Commands.CreateTodoList;
-using CityCode.MandateSystem.Application.TodoLists.Commands.PurgeTodoLists;
-using CityCode.MandateSystem.Domain.Entities;
+namespace KeyRails.BankingApi.Application.FunctionalTests.TodoLists.Commands;
+using KeyRails.BankingApi.Application.Common.Exceptions;
+using KeyRails.BankingApi.Application.Common.Security;
+using KeyRails.BankingApi.Application.TodoLists.Commands.CreateTodoList;
+using KeyRails.BankingApi.Application.TodoLists.Commands.PurgeTodoLists;
+using KeyRails.BankingApi.Domain.Entities;
 using static Testing;
 
 public class PurgeTodoListsTests : BaseTestFixture

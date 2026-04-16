@@ -2,9 +2,9 @@
 # mandate-api
 Manages the full lifecycle of mandates: creation, approvals, and status tracking
 =======
-﻿# CityCode.MandateSystem
+﻿# KeyRails.BankingApi
 
-The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CityCode.MandateSystem) version 8.0.2.
+The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/KeyRails.BankingApi) version 8.0.2.
 
 ## Build
 

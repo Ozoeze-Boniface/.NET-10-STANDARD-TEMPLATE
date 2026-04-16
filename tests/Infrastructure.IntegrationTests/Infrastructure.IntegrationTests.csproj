@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>CityCode.MandateSystem.Infrastructure.IntegrationTests</RootNamespace>
-        <AssemblyName>CityCode.MandateSystem.Infrastructure.IntegrationTests</AssemblyName>
+        <RootNamespace>KeyRails.BankingApi.Infrastructure.IntegrationTests</RootNamespace>
+        <AssemblyName>KeyRails.BankingApi.Infrastructure.IntegrationTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

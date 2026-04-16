@@ -1,10 +1,10 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests.TodoItems.Commands;
-using CityCode.MandateSystem.Application.TodoItems.Commands.CreateTodoItem;
-using CityCode.MandateSystem.Application.TodoItems.Commands.UpdateTodoItem;
-using CityCode.MandateSystem.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using CityCode.MandateSystem.Application.TodoLists.Commands.CreateTodoList;
-using CityCode.MandateSystem.Domain.Entities;
-using CityCode.MandateSystem.Domain.Enums;
+namespace KeyRails.BankingApi.Application.FunctionalTests.TodoItems.Commands;
+using KeyRails.BankingApi.Application.TodoItems.Commands.CreateTodoItem;
+using KeyRails.BankingApi.Application.TodoItems.Commands.UpdateTodoItem;
+using KeyRails.BankingApi.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using KeyRails.BankingApi.Application.TodoLists.Commands.CreateTodoList;
+using KeyRails.BankingApi.Domain.Entities;
+using KeyRails.BankingApi.Domain.Enums;
 
 using static Testing;
 

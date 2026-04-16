@@ -1,8 +1,8 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests.TodoItems.Commands;
-using CityCode.MandateSystem.Application.Common.Exceptions;
-using CityCode.MandateSystem.Application.TodoItems.Commands.CreateTodoItem;
-using CityCode.MandateSystem.Application.TodoLists.Commands.CreateTodoList;
-using CityCode.MandateSystem.Domain.Entities;
+namespace KeyRails.BankingApi.Application.FunctionalTests.TodoItems.Commands;
+using KeyRails.BankingApi.Application.Common.Exceptions;
+using KeyRails.BankingApi.Application.TodoItems.Commands.CreateTodoItem;
+using KeyRails.BankingApi.Application.TodoLists.Commands.CreateTodoList;
+using KeyRails.BankingApi.Domain.Entities;
 
 using static Testing;
 

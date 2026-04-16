@@ -1,0 +1,6 @@
+namespace KeyRails.BankingApi.Domain.Events;
+
+public class ApiRequestLogDeletedEvent(ApiRequestLog item) : BaseEvent
+{
+    public ApiRequestLog Item { get; } = item;
+}

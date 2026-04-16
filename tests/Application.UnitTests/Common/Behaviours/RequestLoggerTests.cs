@@ -1,12 +1,12 @@
-namespace CityCode.MandateSystem.Application.UnitTests.Common.Behaviours;
+namespace KeyRails.BankingApi.Application.UnitTests.Common.Behaviours;
 using Microsoft.Extensions.Logging;
 
 using Moq;
 using NUnit.Framework;
 
-using CityCode.MandateSystem.Application.Common.Behaviours;
-using CityCode.MandateSystem.Application.Common.Interfaces;
-using CityCode.MandateSystem.Application.TodoItems.Commands.CreateTodoItem;
+using KeyRails.BankingApi.Application.Common.Behaviours;
+using KeyRails.BankingApi.Application.Common.Interfaces;
+using KeyRails.BankingApi.Application.TodoItems.Commands.CreateTodoItem;
 
 
 public class RequestLoggerTests

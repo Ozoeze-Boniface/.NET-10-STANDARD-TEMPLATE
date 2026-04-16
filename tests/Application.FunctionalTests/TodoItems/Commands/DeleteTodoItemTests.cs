@@ -1,8 +1,8 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests.TodoItems.Commands;
-using CityCode.MandateSystem.Application.TodoItems.Commands.CreateTodoItem;
-using CityCode.MandateSystem.Application.TodoItems.Commands.DeleteTodoItem;
-using CityCode.MandateSystem.Application.TodoLists.Commands.CreateTodoList;
-using CityCode.MandateSystem.Domain.Entities;
+namespace KeyRails.BankingApi.Application.FunctionalTests.TodoItems.Commands;
+using KeyRails.BankingApi.Application.TodoItems.Commands.CreateTodoItem;
+using KeyRails.BankingApi.Application.TodoItems.Commands.DeleteTodoItem;
+using KeyRails.BankingApi.Application.TodoLists.Commands.CreateTodoList;
+using KeyRails.BankingApi.Domain.Entities;
 using static Testing;
 
 public class DeleteTodoItemTests : BaseTestFixture

@@ -1,4 +1,4 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests;
+namespace KeyRails.BankingApi.Application.FunctionalTests;
 using System.Data.Common;
 
 using Microsoft.Data.SqlClient;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 using Respawn;
 
-using CityCode.MandateSystem.Infrastructure.Data;
+using KeyRails.BankingApi.Infrastructure.Data;
 
 public class SqlServerTestDatabase : ITestDatabase
 {

@@ -1,13 +1,14 @@
-namespace CityCode.MandateSystem.Application.UnitTests.Common.Mappings;
+namespace KeyRails.BankingApi.Application.UnitTests.Common.Mappings;
 using System.Reflection;
 using System.Runtime.Serialization;
 using AutoMapper;
 using NUnit.Framework;
-using CityCode.MandateSystem.Application.Common.Interfaces;
-using CityCode.MandateSystem.Application.Common.Models;
-using CityCode.MandateSystem.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using CityCode.MandateSystem.Application.TodoLists.Queries.GetTodos;
-using CityCode.MandateSystem.Domain.Entities;
+using KeyRails.BankingApi.Application.Common.Interfaces;
+using KeyRails.BankingApi.Application.Common.Models;
+using KeyRails.BankingApi.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using KeyRails.BankingApi.Application.TodoLists.Queries.GetTodos;
+using KeyRails.BankingApi.Domain.Entities;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public class MappingTests
 {
@@ -16,8 +17,9 @@ public class MappingTests
 
     public MappingTests()
     {
-        this.configuration = new MapperConfiguration(config =>
-            config.AddMaps(Assembly.GetAssembly(typeof(IApplicationDbContext))));
+        this.configuration = new MapperConfiguration(
+            config => config.AddMaps(Assembly.GetAssembly(typeof(IApplicationDbContext))),
+            NullLoggerFactory.Instance);
 
         this.mapper = this.configuration.CreateMapper();
     }

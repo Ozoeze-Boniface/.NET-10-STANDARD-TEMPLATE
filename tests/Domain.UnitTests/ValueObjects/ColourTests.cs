@@ -1,8 +1,8 @@
-namespace CityCode.MandateSystem.Domain.UnitTests.ValueObjects;
+namespace KeyRails.BankingApi.Domain.UnitTests.ValueObjects;
 using FluentAssertions;
 using NUnit.Framework;
-using CityCode.MandateSystem.Domain.Exceptions;
-using CityCode.MandateSystem.Domain.ValueObjects;
+using KeyRails.BankingApi.Domain.Exceptions;
+using KeyRails.BankingApi.Domain.ValueObjects;
 public class ColourTests
 {
     [Test]

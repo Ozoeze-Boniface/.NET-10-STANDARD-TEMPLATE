@@ -1,13 +1,13 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests;
+namespace KeyRails.BankingApi.Application.FunctionalTests;
 using MediatR;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using CityCode.MandateSystem.Domain.Constants;
-using CityCode.MandateSystem.Infrastructure.Data;
-using CityCode.MandateSystem.Infrastructure.Identity;
+using KeyRails.BankingApi.Domain.Constants;
+using KeyRails.BankingApi.Infrastructure.Data;
+using KeyRails.BankingApi.Infrastructure.Identity;
 
 [SetUpFixture]
 public partial class Testing

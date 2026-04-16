@@ -1,4 +1,4 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests;
+namespace KeyRails.BankingApi.Application.FunctionalTests;
 using System.Data.Common;
 
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-using CityCode.MandateSystem.Application.Common.Interfaces;
-using CityCode.MandateSystem.Infrastructure.Data;
+using KeyRails.BankingApi.Application.Common.Interfaces;
+using KeyRails.BankingApi.Infrastructure.Data;
 
 using static Testing;
 

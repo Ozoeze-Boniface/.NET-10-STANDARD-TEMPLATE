@@ -1,4 +1,4 @@
-namespace CityCode.MandateSystem.Application.FunctionalTests;
+namespace KeyRails.BankingApi.Application.FunctionalTests;
 using System.Data.Common;
 
 public interface ITestDatabase

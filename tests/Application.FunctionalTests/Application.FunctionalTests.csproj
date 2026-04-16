@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>CityCode.MandateSystem.Application.FunctionalTests</RootNamespace>
-        <AssemblyName>CityCode.MandateSystem.Application.FunctionalTests</AssemblyName>
+        <RootNamespace>KeyRails.BankingApi.Application.FunctionalTests</RootNamespace>
+        <AssemblyName>KeyRails.BankingApi.Application.FunctionalTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,7 +34,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\src\CityCode.MandateSystem.Api\CityCode.MandateSystem.Api.csproj" />
+        <ProjectReference Include="..\..\src\KeyRails.BankingApi.Api\KeyRails.BankingApi.Api.csproj" />
     </ItemGroup>
 
 </Project>
