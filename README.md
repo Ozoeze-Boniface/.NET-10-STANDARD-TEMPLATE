@@ -1,81 +1,44 @@
-<<<<<<< HEAD
-# mandate-api
-Manages the full lifecycle of mandates: creation, approvals, and status tracking
-=======
-﻿# KeyRails.BankingApi
+# KeyRails.BankingApi
 
-The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/KeyRails.BankingApi) version 8.0.2.
+KeyRails.BankingApi is the primary solution in this repository. It includes the HTTP API, application layer, domain layer, infrastructure layer, and background worker service.
+
+## Solution Layout
+
+- `src/KeyRails.BankingApi.Api` hosts the API surface.
+- `src/KeyRails.BankingApi.Application` contains application logic.
+- `src/KeyRails.BankingApi.Domain` contains domain entities and rules.
+- `src/KeyRails.BankingApi.Infrastructure` contains persistence and integration concerns.
+- `src/KeyRails.BankingApi.WorkerService` hosts background processing.
 
 ## Build
 
-Run `dotnet build -tl` to build the solution.
+```bash
+dotnet build KeyRails.BankingApi.sln
+```
 
 ## Run
 
-To run the web application:
+Run the API:
 
 ```bash
-cd .\src\Web\
-dotnet watch run
+dotnet run --project src/KeyRails.BankingApi.Api/KeyRails.BankingApi.Api.csproj
 ```
 
-Navigate to https://localhost:5001. The application will automatically reload if you change any of the source files.
-
-## Code Styles & Formatting
-
-The template includes [EditorConfig](https://editorconfig.org/) support to help maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs. The **.editorconfig** file defines the coding styles applicable to this solution.
-
-## Code Scaffolding
-
-The template includes support to scaffold new commands and queries.
-
-Start in the `.\src\Application\` folder.
-
-Create a new command:
-
-```
-dotnet new ca-usecase --name CreateTodoList --feature-name TodoLists --usecase-type command --return-type int
-```
-
-dotnet new ca-usecase --name CreateCustomer --feature-name Customers --usecase-type command --return-type int
-
-Create a new query:
-
-```
-dotnet new ca-usecase -n GetTodos -fn TodoLists -ut query -rt TodosVm
-```
-
-If you encounter the error _"No templates or subcommands found matching: 'ca-usecase'."_, install the template and try again:
+Run the worker service:
 
 ```bash
-dotnet new install Clean.Architecture.Solution.Template::8.0.2
+dotnet run --project src/KeyRails.BankingApi.WorkerService/KeyRails.BankingApi.WorkerService.csproj
 ```
 
 ## Test
 
-The solution contains unit, integration, functional, and acceptance tests.
-
-To run the unit, integration, and functional tests (excluding acceptance tests):
-
 ```bash
-dotnet test --filter "FullyQualifiedName!~AcceptanceTests"
+dotnet test KeyRails.BankingApi.sln
 ```
 
-To run the acceptance tests, first start the application:
+## Database Migrations
 
 ```bash
-cd .\src\Web\
-dotnet run
+dotnet ef migrations add <MigrationName> -s src/KeyRails.BankingApi.Api -p src/KeyRails.BankingApi.Infrastructure
+dotnet ef database update -s src/KeyRails.BankingApi.Api -p src/KeyRails.BankingApi.Infrastructure
 ```
-
-Then, in a new console, run the tests:
-
-```bash
-cd .\src\Web\
-dotnet test
-```
-
-## Helper
-
-To learn more about the template go to the [project website](https://github.com/jasontaylordev/CleanArchitecture). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
->>>>>>> e585623 (initial)

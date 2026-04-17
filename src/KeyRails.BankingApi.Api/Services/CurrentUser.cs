@@ -1,4 +1,4 @@
-namespace KeyRails.BankingApi.Web.Services;
+namespace KeyRails.BankingApi.Api.Services;
 using System.Security.Claims;
 using KeyRails.BankingApi.Api.Extentions;
 using KeyRails.BankingApi.Application.Common.Interfaces;

@@ -3,28 +3,56 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using KeyRails.BankingApi.Application.Common.Interfaces;
+using KeyRails.BankingApi.Api.Services;
 using KeyRails.BankingApi.Infrastructure.Data;
-using KeyRails.BankingApi.Web.Services;
 using Serilog.Sinks.Elasticsearch;
 using ZymLabs.NSwag.FluentValidation;
 
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebServices(this IServiceCollection services)
+    public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddScoped<IUser, CurrentUser>();
 
         services.AddHttpContextAccessor();
-
-        services.AddEndpointDefinitions(typeof(GapUser));
+        services.AddControllers();
 
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
         services.AddExceptionHandler<CustomExceptionHandler>();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "KeyRails.BankingApi API", Version = "v1" });
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
 
         services.AddScoped(provider =>
         {

@@ -1,6 +1,4 @@
-
-
-using SeaBaas.CentralJournalPosting.Api.Infrastructure;
+using KeyRails.BankingApi.Api.Infrastructure;
 using KeyRails.BankingApi.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +9,7 @@ const string CorsPolicyName = "corsapp";
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebServices();
+builder.Services.AddApiServices();
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
@@ -57,17 +55,15 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // await app.InitializeSeed(CancellationToken.None);
-app.UseExceptionHandler(options => { });
+app.UseExceptionHandler();
 app.UseCustomExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseCors(CorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapEndpoints();
-app.UseEndpointDefinitions();
-
-//app.UseSwagger();
-//app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KeyRails.BankingApi Middleware"));
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KeyRails.BankingApi API"));
+app.MapControllers();
 
 app.Run();
 public partial class Program { }

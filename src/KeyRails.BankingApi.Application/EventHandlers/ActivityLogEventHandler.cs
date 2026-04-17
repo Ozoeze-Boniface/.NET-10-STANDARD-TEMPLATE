@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KeyRails.BankingApi.Domain.Events.ActivityLog;
 
-namespace KeyRails.BankingApi.Application.ApiRequestLogs.EventHandlers
+namespace KeyRails.BankingApi.Application.EventHandlers
 {
     public class ActivityLogEventHandler(ILogger<ActivityLogEventHandler> logger, IApplicationDbContext context, IUser user) : INotificationHandler<ActivityLogEvent>
     {

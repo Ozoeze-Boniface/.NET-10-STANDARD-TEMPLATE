@@ -1,4 +1,4 @@
-namespace KeyRails.BankingApi.Web.Infrastructure;
+namespace KeyRails.BankingApi.Api.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using KeyRails.BankingApi.Application.Common.Exceptions;
@@ -82,4 +82,3 @@ public class CustomExceptionHandler : IExceptionHandler
         });
     }
 }
-

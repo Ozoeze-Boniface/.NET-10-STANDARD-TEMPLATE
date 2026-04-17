@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using KeyRails.BankingApi.Application.Common.Exceptions;
 using KeyRails.BankingApi.Application.Common.Models.View;
 
-namespace SeaBaas.CentralJournalPosting.Api.Infrastructure
+namespace KeyRails.BankingApi.Api.Infrastructure
 {
     public class ExceptionMiddleware
     {

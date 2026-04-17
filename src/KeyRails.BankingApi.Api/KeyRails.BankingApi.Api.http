@@ -1,36 +1,17 @@
-﻿### Sample Template Get all users
+@KeyRails.BankingApi_Host = http://localhost:5092
 
-GET  http://localhost:5000/Test/SayHello
+### KeyRails.BankingApi health check
+GET {{KeyRails.BankingApi_Host}}/health
 
-POST http://localhost:5000/login
-Accept: application/json
-{
-  "email": "tester@gmail.com",
-  "password": "test@123"
-}
-### Get user by id
-GET http://localhost:5092/customers/
+### Get KeyRails.BankingApi todo items
+GET {{KeyRails.BankingApi_Host}}/todo/GetTodoItemsWithPagination?ListId=1&PageNumber=1&PageSize=10
 Accept: application/json
 
-### Create customer
-POST http://localhost:5092/customers
+### Create a KeyRails.BankingApi todo item
+POST {{KeyRails.BankingApi_Host}}/todo/CreateTodoItem
 Content-Type: application/json
 
 {
-  "username": "testuserName",
-  "fullName": "User Name",
-  "email": "me@testme.com",
-  "dateOfBirth": "1993-04-20"
+  "listId": 1,
+  "title": "KeyRails.BankingApi sample todo item"
 }
-
-### Update customer
-POST http://localhost:5092/register
-Content-Type: application/json
-{
-  "email": "test@me.com",
-  "password": "test"
-}
-
-### Delete user
-DELETE http://localhost:5092/customers/
-Accept: application/json
