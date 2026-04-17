@@ -37,7 +37,7 @@ public class SqlServerTestDatabase : ITestDatabase
             .UseSqlServer(this._connectionString)
             .Options;
 
-        var context = new ApplicationDbContext(options);
+        var context = new ApplicationDbContext();
 
         context.Database.Migrate();
 

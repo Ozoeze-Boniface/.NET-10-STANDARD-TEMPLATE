@@ -30,7 +30,7 @@ public static class DependencyInjection
             }
         }, Assembly.GetExecutingAssembly());
 
-        services.AddHttpClient("NibssClient", client =>
+        services.AddHttpClient("ApiClient", client =>
         {
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(

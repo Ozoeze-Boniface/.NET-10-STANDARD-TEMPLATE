@@ -1,13 +1,9 @@
 namespace KeyRails.BankingApi.Application.FunctionalTests;
-using MediatR;
 
-using Microsoft.AspNetCore.Identity;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
-using KeyRails.BankingApi.Domain.Constants;
 using KeyRails.BankingApi.Infrastructure.Data;
-using KeyRails.BankingApi.Infrastructure.Identity;
 
 [SetUpFixture]
 public partial class Testing
@@ -46,44 +42,6 @@ public partial class Testing
     }
 
     public static string? GetUserId() => _userId;
-
-    public static async Task<string> RunAsDefaultUserAsync() => await RunAsUserAsync("test@local", "Testing1234!", []);
-
-    public static async Task<string> RunAsAdministratorAsync() => await RunAsUserAsync("administrator@local", "Administrator1234!", [Roles.Administrator]);
-
-    public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
-    {
-        using var scope = _scopeFactory.CreateScope();
-
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-        var user = new ApplicationUser { UserName = userName, Email = userName };
-
-        var result = await userManager.CreateAsync(user, password);
-
-        if (roles.Any())
-        {
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            foreach (var role in roles)
-            {
-                await roleManager.CreateAsync(new IdentityRole(role));
-            }
-
-            await userManager.AddToRolesAsync(user, roles);
-        }
-
-        if (result.Succeeded)
-        {
-            _userId = user.Id;
-
-            return _userId;
-        }
-
-        var errors = string.Join(Environment.NewLine, result.ToApplicationResult().Errors);
-
-        throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
-    }
 
     public static async Task ResetState()
     {

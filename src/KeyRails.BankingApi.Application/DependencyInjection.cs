@@ -16,7 +16,7 @@ public static class DependencyInjection
         }, Assembly.GetExecutingAssembly());
         // services.AddAutoMapper(typeof(Mapper).Assembly);
 
-        services.AddHttpClient("NibssClient", client =>
+        services.AddHttpClient("ApiClient", client =>
         {
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(

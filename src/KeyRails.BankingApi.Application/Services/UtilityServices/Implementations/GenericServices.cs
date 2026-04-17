@@ -23,7 +23,7 @@ public class GenericServices : IGenericServices
         var apiResponse = "";
         var data = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
-        using var httpClient = _httpClientFactory.CreateClient("NibssClient");
+        using var httpClient = _httpClientFactory.CreateClient("ApiClient");
         using var request = new HttpRequestMessage(HttpMethod.Post, apiEndPoint);
 
         if (headers != null && headers.Count > 0)
@@ -50,7 +50,7 @@ public class GenericServices : IGenericServices
 
         var endpointMethod = method?.ToLowerInvariant() == "get" ? HttpMethod.Get : HttpMethod.Post;
 
-        using var httpClient = _httpClientFactory.CreateClient("NibssClient");
+        using var httpClient = _httpClientFactory.CreateClient("ApiClient");
         using var request = new HttpRequestMessage(endpointMethod, apiEndPoint);
 
         if (headers != null && headers.Count > 0)
@@ -73,10 +73,10 @@ public class GenericServices : IGenericServices
     public async Task<string> ConsumeRestAPIText(string apiEndPoint, string serializedRequest, Dictionary<string, string> headers)
     {
         var apiResponse = "";
-        _logger.LogInformation("NIBBS REQUEST: {ApiRequest}", serializedRequest);
+        _logger.LogInformation("REQUEST: {ApiRequest}", serializedRequest);
         var data = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
 
-        using var httpClient = _httpClientFactory.CreateClient("NibssClient");
+        using var httpClient = _httpClientFactory.CreateClient("ApiClient");
         using var request = new HttpRequestMessage(HttpMethod.Post, apiEndPoint);
 
         if (headers != null && headers.Count > 0)
@@ -92,7 +92,7 @@ public class GenericServices : IGenericServices
 
         var response = await httpClient.SendAsync(request);
         apiResponse = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("NIBBS RESPONSE: {ApiResponse}", apiResponse);
+        _logger.LogInformation("RESPONSE: {ApiResponse}", apiResponse);
         if (!response.IsSuccessStatusCode)
         {
             throw new BadRequestException(apiResponse);
@@ -108,7 +108,7 @@ public class GenericServices : IGenericServices
 
         var endpointMethod = method?.ToLowerInvariant() == "get" ? HttpMethod.Get : HttpMethod.Post;
 
-        using var httpClient = _httpClientFactory.CreateClient("NibssClient");
+        using var httpClient = _httpClientFactory.CreateClient("ApiClient");
         using var request = new HttpRequestMessage(endpointMethod, apiEndPoint);
 
         if (headers != null && headers.Count > 0)
@@ -167,7 +167,7 @@ public class GenericServices : IGenericServices
 
         var data = new StringContent(soapText, Encoding.UTF8, "text/xml");
 
-        using var httpClient = _httpClientFactory.CreateClient("NibssClient");
+        using var httpClient = _httpClientFactory.CreateClient("ApiClient");
         using var request = new HttpRequestMessage(HttpMethod.Post, webWebServiceUrl);
 
         request.Content = data;
