@@ -55,7 +55,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // await app.InitializeSeed(CancellationToken.None);
-app.UseExceptionHandler();
 app.UseCustomExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseCors(CorsPolicyName);

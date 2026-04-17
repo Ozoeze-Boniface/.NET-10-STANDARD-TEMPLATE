@@ -1,8 +1,6 @@
 namespace KeyRails.BankingApi.Infrastructure.Data;
 
 using System.Reflection;
-
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using KeyRails.BankingApi.Application.Common.Interfaces;
@@ -10,6 +8,11 @@ using KeyRails.BankingApi.Domain.Entities;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
     public DbSet<TodoList> TodoLists => Set<TodoList>();
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();

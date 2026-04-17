@@ -23,7 +23,6 @@ public static class DependencyInjection
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
-        services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {

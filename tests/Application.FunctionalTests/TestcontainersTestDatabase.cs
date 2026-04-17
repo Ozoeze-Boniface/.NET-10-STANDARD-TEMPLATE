@@ -33,7 +33,7 @@ public class TestcontainersTestDatabase : ITestDatabase
             .UseSqlServer(this._connectionString)
             .Options;
 
-        var context = new ApplicationDbContext();
+        using var context = new ApplicationDbContext(options);
 
         context.Database.Migrate();
 
